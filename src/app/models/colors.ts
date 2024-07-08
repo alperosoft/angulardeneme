@@ -12,3 +12,4 @@ export interface Colors {
   cl_ad: string;
   cl_color_drm: number;
 }
+

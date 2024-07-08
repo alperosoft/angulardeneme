@@ -13,7 +13,7 @@ export class SpdService {
   constructor(private http: HttpClient) {
   }
 
-  public InsertSpd(spd: any): Observable<number> {
+  public save(spd: any): Observable<number> {
     return this.http.post<number>(`${url}/spd/insertspd`, spd);
   }
 

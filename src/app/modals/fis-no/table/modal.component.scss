@@ -53,7 +53,6 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 999;
 }
 
 ::ng-deep #medium-indicator {
@@ -61,5 +60,6 @@
   margin-right: 10px;
   top: 50%;
   left: 50%;
-  z-index: 999;
+  z-index: 10;
+
 }

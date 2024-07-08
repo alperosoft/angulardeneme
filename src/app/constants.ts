@@ -37,6 +37,11 @@ export const topPages: topPage[] = [
     name: 'Döküm Stok Girişi',
     path: '/home/dokum-stok-girisi',
   },
+  {
+    id: '7',
+    name: 'Alüminyum Rapor',
+    path: '/home/aluminyum-rapor',
+  },
 ];
 
 export class Menu {

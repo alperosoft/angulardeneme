@@ -8,8 +8,7 @@ import {DinamikRaporComponent} from "./pages/dinamik-rapor/dinamik-rapor.compone
 import {SiparisGirisiComponent} from "./pages/siparis-girisi/siparis-girisi.component";
 import {DokumStokGirisiComponent} from "./pages/dokum-stok-girisi/dokum-stok-girisi.component";
 import {YetkilendirmeComponent} from "./pages/yetkilendirme/yetkilendirme.component";
-import { FirmaTanitimiComponent } from './pages/firma-tanitimi/firma-tanitimi.component';
-import { MamulTanitimiComponent } from './pages/mamul-tanitimi/mamul-tanitimi.component';
+import { AluminyumRaporComponent } from './pages/aluminyum-rapor/aluminyum-rapor.component';
 
 export const AppRoutes: Routes = [
   {
@@ -51,12 +50,8 @@ export const AppRoutes: Routes = [
         component: DokumStokGirisiComponent,
       },
       {
-        path: "home/firma-tanitimi",
-        component: FirmaTanitimiComponent,
-      },
-      {
-        path: "home/mamul-tanitimi",
-        component: MamulTanitimiComponent,
+        path: "home/aluminyum-rapor",
+        component: AluminyumRaporComponent,
       }
     ],
   },

@@ -7,5 +7,8 @@ export class Stkfd {
     grp_ad?: string;
     cmpt_kg?: number;
     cmpt_mt?: number;
+    cl_v5: string
+    cmpt_sfd_mkt: number
+    sfd_ay: string
   }
   

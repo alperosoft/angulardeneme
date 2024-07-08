@@ -173,6 +173,8 @@ export class ModalFisnoFilterComponent implements OnInit {
       } else {
         this.filterValues.frm_kod_s = result.frm_kod;
       }
+
+      sessionStorage.setItem('filterModal', JSON.stringify(this.filterValues));
     });
   }
 
@@ -192,6 +194,7 @@ export class ModalFisnoFilterComponent implements OnInit {
       } else {
         this.filterValues.mm_kod_s = result.mm_kod;
       }
+      sessionStorage.setItem('filterModal', JSON.stringify(this.filterValues));
     });
   }
 }

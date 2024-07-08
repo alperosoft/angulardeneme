@@ -57,4 +57,7 @@
       <div><button mat-raised-button (click)="onClose()">Çıkış</button></div>
     </div>
   </div>
+  <div *ngIf="isDetailLoading" class="spinner-overlay">
+    <mat-spinner class="spinner" *ngIf="isDetailLoading" diameter="40" color="primary"></mat-spinner>
+  </div>
 </div>

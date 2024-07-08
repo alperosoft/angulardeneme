@@ -28,12 +28,12 @@ export class MamlzService {
   public getMamlz(
     an_srk_no: number,
     an_tur: number,
-    as_left_kod?: string,
-    as_kod_i?: string,
-    as_kod_s?: string,
+    as_left_kod: string,
+    as_kod_i: string,
+    as_kod_s: string,
   ): Observable<Mamlz[]> {
     return this.httpClient.get<Mamlz[]>(
-      `${apiURL}/Mamlz?an_srk_no=${an_srk_no}&an_tur=${an_tur}${as_left_kod ? `&as_left_kod=${as_left_kod}` : ""}${as_kod_i ? `&as_kod_i=${as_kod_i}` : ""}${as_kod_s ? `&as_kod_s=${as_kod_s}` : ""}`,
+      `${apiURL}/mamlz?an_srk_no=${an_srk_no}&an_tur=${an_tur}&as_left_kod=${as_left_kod}&as_kod_i=${as_kod_i}&as_kod_s=${as_kod_s}`,
     );
   }
 }

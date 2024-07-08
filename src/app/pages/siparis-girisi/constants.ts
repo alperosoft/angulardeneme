@@ -37,7 +37,7 @@ export const calismaTuru: Select[] = [
 export const siparisDurumu: Select[] = [
   { value: '', viewValue: 'Giriş Sürecinde' },
   { value: '1', viewValue: 'Tamamlandı' },
-  { value: '', viewValue: '' },
+  { value: '0', viewValue: '' },
 ];
 
 export const odemePlani: Select[] = [];

@@ -1,22 +1,22 @@
-import {CommonModule, DatePipe} from '@angular/common';
-import {concatMap, forkJoin, isEmpty} from 'rxjs';
-import {PersonelService} from '../../services/personel.service';
-import {SpService} from '../../services/sp.service';
-import {ModalFirmaComponent} from '../../modals/firma/firma.component';
-import {ModalFirmaDistComponent} from '../../modals/firmadist/firmadist.component';
-import {ToastrService} from 'ngx-toastr';
-import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {NgScrollbarModule} from 'ngx-scrollbar';
-import {DemoMaterialModule} from '../../demo-material-module';
-import {GnstrService} from '../../services/gnstr.service';
-import {SpkategService} from '../../services/spkateg.service';
-import {LbService} from '../../services/lb.service';
-import {FirmaService} from '../../services/firma.service';
-import {Sp} from '../../models/sp';
-import {tableIdService} from '../../services/tableId.service';
-import {ModalFisnoTableComponent} from 'src/app/modals/fis-no/table/modal.component';
-import {FirmadrService} from 'src/app/services/firmadr.service';
+import { CommonModule, DatePipe } from '@angular/common';
+import { concatMap, forkJoin, isEmpty } from 'rxjs';
+import { PersonelService } from '../../services/personel.service';
+import { SpService } from '../../services/sp.service';
+import { ModalFirmaComponent } from '../../modals/firma/firma.component';
+import { ModalFirmaDistComponent } from '../../modals/firmadist/firmadist.component';
+import { ToastrService } from 'ngx-toastr';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { DemoMaterialModule } from '../../demo-material-module';
+import { GnstrService } from '../../services/gnstr.service';
+import { SpkategService } from '../../services/spkateg.service';
+import { LbService } from '../../services/lb.service';
+import { FirmaService } from '../../services/firma.service';
+import { Sp } from '../../models/sp';
+import { tableIdService } from '../../services/tableId.service';
+import { ModalFisnoTableComponent } from 'src/app/modals/fis-no/table/modal.component';
+import { FirmadrService } from 'src/app/services/firmadr.service';
 import {
   DxDateBoxModule,
   DxDropDownBoxModule,
@@ -26,19 +26,29 @@ import {
   DxTextAreaModule,
   DxTextBoxModule,
 } from 'devextreme-angular';
-import {FirmaDistService} from 'src/app/services/firmadist.service';
-import {daysAfter, formatDate} from 'src/app/utils/formattedDate';
+import { FirmaDistService } from 'src/app/services/firmadist.service';
+import { daysAfter, formatDate } from 'src/app/utils/formattedDate';
 import * as Constants from './constants';
-import {AppHeaderComponent} from "../../layouts/full/header/header.component";
-import {MatDialog} from "@angular/material/dialog";
-import {Component, OnInit} from "@angular/core";
-import {TableSiparisDetayComponent} from "src/app/pages/siparis-girisi-detay/siparis-girisi-detay.component"
-import {Stkf} from "../../models/stkf";
+import { AppHeaderComponent } from '../../layouts/full/header/header.component';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { TableSiparisDetayComponent } from 'src/app/pages/siparis-girisi-detay/siparis-girisi-detay.component';
+import { Stkf } from '../../models/stkf';
 
 @Component({
   selector: 'app-siparis-girisi',
   standalone: true,
-  imports: [CommonModule, AppHeaderComponent, DemoMaterialModule, TableSiparisDetayComponent,
+  imports: [
+    CommonModule,
+    AppHeaderComponent,
+    DemoMaterialModule,
+    TableSiparisDetayComponent,
     NgScrollbarModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -49,12 +59,12 @@ import {Stkf} from "../../models/stkf";
     DxDateBoxModule,
     DxTextAreaModule,
     DxDropDownBoxModule,
-    DxListModule,],
+    DxListModule,
+  ],
   templateUrl: './siparis-girisi.component.html',
-  styleUrl: './siparis-girisi.component.scss'
+  styleUrl: './siparis-girisi.component.scss',
 })
 export class SiparisGirisiComponent implements OnInit {
-
   depo = 30;
   bicimNo = 150;
   yil = new Date().getFullYear();
@@ -68,8 +78,10 @@ export class SiparisGirisiComponent implements OnInit {
   spTarih: string;
   spPrimno: number;
   days: number;
-  frm = {frm_ksad: '', frm_kod: '', frmd_kod: ''};
+  frm = { frm_ksad: '', frm_kod: '', frmd_kod: '' };
 
+  @ViewChild(TableSiparisDetayComponent, { static: false })
+  siparisGirisiDetayComponent: TableSiparisDetayComponent;
 
   Values: Sp = {
     sp_srk_no: Number(localStorage.getItem('srk_no')),
@@ -127,8 +139,7 @@ export class SiparisGirisiComponent implements OnInit {
     private tableIdService: tableIdService,
     private personelService: PersonelService,
     private firmaDistService: FirmaDistService,
-  ) {
-  }
+  ) {}
 
   lbObservable = this.lbService.getLb();
   gnstrObservable = this.gnstrService.getGnstr();
@@ -277,7 +288,7 @@ export class SiparisGirisiComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.onFisNo(result.spd_no2);
+      if (result !== undefined) this.onFisNo(result.spd_no2);
     });
   }
 
@@ -323,8 +334,7 @@ export class SiparisGirisiComponent implements OnInit {
             sp_no1: item.sp_no1,
             sp_no2: item.sp_no2,
             sp_ihrc_tip: item.sp_ihrc_tip,
-            sp_cikis_trh:
-              item.sp_cikis_trh == null ? null : item.sp_cikis_trh,
+            sp_cikis_trh: item.sp_cikis_trh == null ? null : item.sp_cikis_trh,
             sp_yuktrh: item.sp_yuktrh == null ? null : item.sp_yuktrh,
             sp_per_no: item.sp_per_no,
             sp_ode_plan: item.sp_ode_plan,
@@ -370,81 +380,123 @@ export class SiparisGirisiComponent implements OnInit {
   }
 
   add() {
+  
+    if (
+      this.Values.sp_st_kod.trim() !== '' &&
+      this.Values.sp_per_no !== 0 &&
+      this.Values.sp_siptrh !== '' &&
+      this.Values.sp_frm_kod.trim() !== '' &&
+      this.Values.sp_sk_kod.trim() !== '' &&
+      this.Values.sp_liste !== 0 &&
+      this.Values.sp_yuktrh !== '' &&
+      this.Values.sp_dosya !== '0'
+    ) {
+      const model = sessionStorage.getItem('spValues');
+      const parsedModel = JSON.parse(model);
+      let primno =
+        parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
+      let no2 =
+        parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
+      let no1 =
+        parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
 
-    const model = sessionStorage.getItem('spValues');
-    const parsedModel = JSON.parse(model);
-    let primno = parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
-    let no2 = parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
-    let no1 = parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
+      if (primno === 0) {
+        this.tableIdService
+          .getTableId(0, 0, 0, 'sp')
+          .pipe(
+            concatMap((result1: any) => {
+              this.Values.sp_primno = result1[0].f_id + 1;
 
-    if (primno === 0) {
-      this.tableIdService.getTableId(0, 0, 0, 'sp').pipe(
-        concatMap((result1: any) => {
-          this.Values.sp_primno = result1[0].f_id + 1;
+              this.onInputChange();
+              return this.tableIdService.getTableId(
+                this.sirketNo,
+                this.bicimNo,
+                this.yil,
+                'sp',
+                this.depo.toString(),
+                'sp_no2',
+              );
+            }),
+          )
+          .subscribe(
+            (result2: any) => {
+              this.Values.uk = this.kullaniciKodu;
+              this.Values.iuk = this.kullaniciKodu;
+              this.Values.updt = new Date();
+              this.Values.idt = new Date();
 
-          this.onInputChange();
-          return this.tableIdService.getTableId(this.sirketNo, this.bicimNo, this.yil, 'sp', this.depo.toString(), 'sp_no2');
-        })
-      ).subscribe((result2: any) => {
+              this.Values.sp_asp_id = this.Values.sp_asp_id ?? 0;
+              this.Values.sp_no2 = result2[0].f_id;
+              this.Values.sp_rev = 0;
+              this.onInputChange();
 
+              this.spService
+                .InsertSp(JSON.parse(sessionStorage.getItem('spValues')))
+                .subscribe(
+                  (response) => {
+                    this.toastr.success('Kayıt başarılı', '', {
+                      positionClass: 'toast-top-right',
+                    });
+                  },
+                  (error) => {
+                    this.toastr.error('Eklenirken sorun oluştu');
+                  },
+                );
+            },
+            (error) => {
+              this.toastr.error('Kayıt sırasında hata gerçekleşti.', 'Hata', {
+                positionClass: 'toast-top-right',
+              });
+            },
+          );
+      } else {
         this.Values.uk = this.kullaniciKodu;
-        this.Values.iuk = this.kullaniciKodu;
         this.Values.updt = new Date();
-        this.Values.idt = new Date();
 
-        this.Values.sp_asp_id = this.Values.sp_asp_id ?? 0;
-        this.Values.sp_no2 = result2[0].f_id;
-        this.Values.sp_rev = 0;
+        this.Values.Where = [
+          {
+            sp_no1: no1,
+            sp_no2: no2,
+            sp_primno: primno,
+          },
+        ];
+
         this.onInputChange();
 
         this.spService
-          .InsertSp(JSON.parse(sessionStorage.getItem('spValues')))
+          .updateSp(JSON.parse(sessionStorage.getItem('spValues')))
           .subscribe(
             (response) => {
-              this.toastr.success('Kayıt başarılı', '', {
+              this.toastr.success('Kayıt güncellendi', '', {
                 positionClass: 'toast-top-right',
               });
             },
             (error) => {
-              this.toastr.error('Eklenirken sorun oluştu');
+              console.log(error);
+              this.toastr.error('Güncellenirken sorun oluştu');
             },
           );
-      }, (error) => {
-        this.toastr.error('Kayıt sırasında hata gerçekleşti.', 'Hata', {
-          positionClass: 'toast-top-right',
-        });
-      });
+      }
     } else {
-
-      this.Values.uk = this.kullaniciKodu;
-      this.Values.updt = new Date();
-
-      this.Values.Where = [{
-        sp_no1: no1,
-        sp_no2: no2,
-        sp_primno: primno,
-      }];
-
-      this.onInputChange();
-
-      this.spService
-        .updateSp(JSON.parse(sessionStorage.getItem('spValues')))
-        .subscribe(
-          (response) => {
-            this.toastr.success('Kayıt güncellendi', '', {
-              positionClass: 'toast-top-right',
-            });
-          },
-          (error) => {
-            console.log(error);
-            this.toastr.error('Güncellenirken sorun oluştu');
-          },
-        );
+      console.log('doldurun');
     }
   }
 
   new() {
-    this.newForm();
+    if (
+      this.Values.sp_st_kod.trim() !== '' &&
+      this.Values.sp_per_no !== 0 &&
+      this.Values.sp_siptrh.trim() !== '' &&
+      this.Values.sp_frm_kod.trim() !== '' &&
+      this.Values.sp_sk_kod.trim() !== '' &&
+      this.Values.sp_liste !== 0 &&
+      this.Values.sp_yuktrh.trim() !== '' &&
+      this.Values.sp_dosya !== '0'
+    ) {
+      this.newForm();
+    } else {
+      console.log('doldurun');
+    }
   }
 
   newForm() {
@@ -489,59 +541,80 @@ export class SiparisGirisiComponent implements OnInit {
       sp_rev: 0,
     };
     this.days = 0;
+    this.siparisGirisiDetayComponent.newDetail();
   }
 
   next() {
     const model = sessionStorage.getItem('spValues');
     const parsedModel = JSON.parse(model);
-    let spNo2 = parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
-    let spNo1 = parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
-    this.spService.next(this.sirketNo, this.bicimNo, spNo2, spNo1)
-      .subscribe((x) => {
+    let spNo2 =
+      parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
+    let spNo1 =
+      parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
+    this.spService.next(this.sirketNo, this.bicimNo, spNo2, spNo1).subscribe(
+      (x) => {
         if (x) {
           if (x.statusCode === 200) {
-            const data = {...x.data[0]};
+            const data = { ...x.data[0] };
             this.setData(data);
           }
         }
-      }, error => {
+      },
+      (error) => {
         this.toastr.error('Hata gerçekleşti', 'Hata', {
           positionClass: 'toast-top-right',
         });
-      });
+      },
+    );
   }
 
   previous() {
     const model = sessionStorage.getItem('spValues');
     const parsedModel = JSON.parse(model);
-    let spNo2 = parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
-    let spNo1 = parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
-    this.spService.previous(this.sirketNo, this.bicimNo, spNo2, spNo1)
-      .subscribe((x) => {
-        if (x) {
-          if (x.statusCode === 200) {
-            const data = {...x.data[0]};
-            this.setData(data);
+    let spNo2 =
+      parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
+    let spNo1 =
+      parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
+
+    this.spService
+      .previous(this.sirketNo, this.bicimNo, spNo2, spNo1)
+      .subscribe(
+        async (x) => {
+          if (x) {
+            if (x.statusCode === 200) {
+              const data = { ...x.data[0] };
+              await this.setData(data);
+            }
           }
-        }
-      }, error => {
-        this.toastr.error('Hata gerçekleşti', 'Hata', {
-          positionClass: 'toast-top-right',
-        });
-      });
+        },
+        (error) => {
+          this.toastr.error('Hata gerçekleşti', 'Hata', {
+            positionClass: 'toast-top-right',
+          });
+        },
+      );
   }
 
-  setData(data: any): void {
+  async setData(data: any): Promise<void> {
     if (data.sp_primno !== 0) {
       this.Values = {
-        sp_siptrh: data.sp_siptrh === null ? null : this.datePipe.transform(data.sp_siptrh, 'yyyy-MM-dd'),
+        sp_siptrh:
+          data.sp_siptrh === null
+            ? null
+            : this.datePipe.transform(data.sp_siptrh, 'yyyy-MM-dd'),
         sp_frm_kod: data.sp_frm_kod,
         sp_veren: data.sp_veren,
         sp_no1: data.sp_no1,
         sp_no2: data.sp_no2,
         sp_ihrc_tip: data.sp_ihrc_tip,
-        sp_cikis_trh: data.sp_cikis_trh === null ? null : this.datePipe.transform(data.sp_cikis_trh, 'yyyy-MM-dd'),
-        sp_yuktrh: data.sp_yuktrh === null ? null : this.datePipe.transform(data.sp_yuktrh, 'yyyy-MM-dd'),
+        sp_cikis_trh:
+          data.sp_cikis_trh === null
+            ? null
+            : this.datePipe.transform(data.sp_cikis_trh, 'yyyy-MM-dd'),
+        sp_yuktrh:
+          data.sp_yuktrh === null
+            ? null
+            : this.datePipe.transform(data.sp_yuktrh, 'yyyy-MM-dd'),
         sp_per_no: data.sp_per_no,
         sp_ode_plan: data.sp_ode_plan,
         sp_aciklama1: data.sp_aciklama1,
@@ -567,8 +640,7 @@ export class SiparisGirisiComponent implements OnInit {
         sp_svkfrm_id: data.sp_svkfrm_id,
       };
 
-      this.spOnay =
-        data.sp_onay == 'E' ? 'Onaylı' : 'H' ? 'Onaysız' : 'İptal';
+      this.spOnay = data.sp_onay == 'E' ? 'Onaylı' : 'H' ? 'Onaysız' : 'İptal';
       // this.spFatura = `Teklif No: ${data.sp_gsip_yil === undefined ? 0 : data.sp_gsip_yil}.${data.sp_gsip_no === undefined ? 0 : data.sp_gsip_no} Rev: ${data.sp_rev === undefined ? 0 : data.sp_rev}`;
       this.spTarih = data.sp_onaytrh2
         ? formatDate(data.sp_onaytrh2) + ' müşteri onaylamıştır.'
@@ -581,10 +653,8 @@ export class SiparisGirisiComponent implements OnInit {
       );
       this.days = isNaN(result) ? 0 : result;
 
-      if (data.sp_frm_kod !== undefined)
-        this.onFirma(data.sp_frm_kod);
-      else
-        this.frm.frm_ksad = '';
+      if (data.sp_frm_kod !== undefined) this.onFirma(data.sp_frm_kod);
+      else this.frm.frm_ksad = '';
 
       if (data.sp_frmd_kod !== undefined) {
         //this.frm.frm_kod = data.sp_frmd_kod;
@@ -592,49 +662,9 @@ export class SiparisGirisiComponent implements OnInit {
         this.onDistFirma(data.sp_frmd_kod);
       } else {
         this.frm.frmd_kod = '';
-        this.Values.sp_frm_kod = "";
+        this.Values.sp_frm_kod = '';
       }
-
-    } else {
-      // this.Values = {
-      //   sp_srk_no: Number(localStorage.getItem('srk_no')),
-      //   sp_bcmno: 150,
-      //   sp_bitis: 'A',
-      //   sp_sde_no: 51,
-      //   sp_gsip_yil: 0,
-      //   sp_gsip_no: 0,
-      //   uk: localStorage.getItem('kullanici_adi'),
-      //   iuk: localStorage.getItem('kullanici_adi'),
-      //   sp_onay: 'H',
-      //   sp_dept_no: 0,
-      //   sp_per_no2: 0,
-      //   sp_siptrh: new Date(),
-      //   sp_frm_kod: '',
-      //   sp_veren: '',
-      //   sp_no1: this.yil,
-      //   sp_no2: 0,
-      //   sp_ihrc_tip: '',
-      //   sp_cikis_trh: new Date(),
-      //   sp_yuktrh: new Date(),
-      //   sp_per_no: 0,
-      //   sp_ode_plan: '',
-      //   sp_aciklama1: '',
-      //   sp_frmd_kod: '',
-      //   sp_sk_kod: '',
-      //   sp_label_kod: '',
-      //   sp_liste: null,
-      //   sp_st_kod: '',
-      //   sp_referans: '',
-      //   sp_fad_id: 0,
-      //   sp_teslim: '',
-      //   sp_asp_id: null,
-      //   sp_dosya: '',
-      //   sp_aciklama: '',
-      //   sp_sevk_adres: '',
-      //   sp_svkfrm_id: 0,
-      //   sp_primno: 0,
-      //   sp_afrm_id: 0,
-      // };
+      await this.siparisGirisiDetayComponent.getDetail();
     }
   }
 
@@ -645,21 +675,20 @@ export class SiparisGirisiComponent implements OnInit {
   deleteMaster() {
     const model = sessionStorage.getItem('spValues');
     const parsedModel = JSON.parse(model);
-    let primno = parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
+    let primno =
+      parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
     if (primno !== 0) {
-      this.spService
-        .delete(primno)
-        .subscribe(
-          (response) => {
-            this.newForm();
-            this.toastr.success('Silme işlemi başarılı', '', {
-              positionClass: 'toast-top-right',
-            });
-          },
-          (error) => {
-            this.toastr.error('Eklenirken sorun oluştu');
-          },
-        );
+      this.spService.delete(primno).subscribe(
+        (response) => {
+          this.newForm();
+          this.toastr.success('Silme işlemi başarılı', '', {
+            positionClass: 'toast-top-right',
+          });
+        },
+        (error) => {
+          this.toastr.error('Eklenirken sorun oluştu');
+        },
+      );
     }
   }
 }

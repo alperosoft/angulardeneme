@@ -1,7 +1,7 @@
 import {
   Component,
   EventEmitter,
-  Input,
+  Input, OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -33,7 +33,7 @@ import {
 } from 'devextreme-angular';
 import {ChangeDetectorRef} from '@angular/core';
 import {Spd} from 'src/app/models/spd';
-import {forkJoin} from 'rxjs';
+import {concatMap, forkJoin, from, mergeMap, switchMap, toArray} from 'rxjs';
 import {MamlzService} from 'src/app/services/mamlz.service';
 import {FilterModel} from 'src/app/models/filter';
 import {StokPrtService} from 'src/app/services/stokprt.service';
@@ -45,6 +45,8 @@ import {ToastrService} from 'ngx-toastr';
 import {tableIdService} from '../../services/tableId.service';
 import {ModalTeklifIdComponent} from 'src/app/modals/teklif-id/teklif-id.component';
 import {LfydService} from 'src/app/services/lfyd.service';
+import {StkfCmpt, Stkfdtop} from "../../models/stkfdtop";
+import {BosPrimNoService} from "../../services/bosprimno.service";
 
 @Component({
   selector: 'app-siparis-girisi-detay',
@@ -67,7 +69,7 @@ import {LfydService} from 'src/app/services/lfyd.service';
   styleUrl: './siparis-girisi-detay.component.scss'
 })
 
-export class TableSiparisDetayComponent {
+export class TableSiparisDetayComponent implements OnInit {
   @ViewChild(DxDataGridComponent, {static: false})
   dataGrid: DxDataGridComponent;
   selectedColumn = '';
@@ -83,43 +85,18 @@ export class TableSiparisDetayComponent {
   bicimNo = 150;
   depo = 30;
   yil = new Date().getFullYear();
-
-  setCellValue(newData, value) {
-    let column = <any>this;
-    column.defaultSetCellValue(newData, value);
-    console.warn('newData, value', newData);
-  }
-
-  events: Array<string> = [];
-
-
-  handleRowInserted(eventName: any, event: any) {
-
-    this.events.unshift(eventName)
-
-    if (this.events.unshift(eventName) !== 1) {
-      console.warn("datasource", this.dataSource);
-
-
-      console.warn("asdasdsa")
-      event.data.spd_sira = 0;
-      event.data.spd_primno = 11;
-
-      console.warn('newRowData', event.data);
-    }
-
-
-  }
-
-  // events: Array<string> = [];
-
-  // logEvent(eventName) {
-  //   this.events.unshift(eventName);
-  // }
-
   spdSiparis: Spd[] = [];
   spdSiparisData: MatTableDataSource<Spd>;
   dataSource: Spd[] = [];
+  events: Array<string> = [];
+  clickedPrimNo: number;
+
+
+  spdList: Spd[] = [];
+  spd: Spd;
+  spdRecovery: Spd;
+
+  @ViewChild('grid', {static: false}) grid: DxDataGridComponent;
 
   constructor(
     public colorsService: ColorsService,
@@ -139,10 +116,37 @@ export class TableSiparisDetayComponent {
     private toastr: ToastrService,
     private tableIdService: tableIdService,
     private lfydService: LfydService,
+    private bosPrimnoService: BosPrimNoService,
   ) {
     const _filterModel = new FilterModel();
     _filterModel.filterValue1 = this.primno;
     this.spdSiparisData = new MatTableDataSource<Spd>(this.spdSiparis);
+  }
+
+  setCellValue(newData, value) {
+    let column = <any>this;
+    column.defaultSetCellValue(newData, value);
+  }
+
+  editingStart(spd: Spd) {
+    this.spd = spd;
+  }
+
+  handleRowInserted(eventName: any, event: any) {
+    const model = sessionStorage.getItem('spValues');
+    const parsedModel = JSON.parse(model);
+    let primno = parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
+    if (primno !== 0) {
+      this.events.unshift(eventName)
+      if (this.events.unshift(eventName) !== 1)
+        event.data.spd_sira = 0;
+    } else {
+      this.toastr.info('Lütfen ilk önce masterı kaydediniz.', ' ', {
+        positionClass: 'toast-bottom-full-width',
+        enableHtml: true,
+        closeButton: true
+      });
+    }
   }
 
   async funcStokSiparisNumber(
@@ -196,29 +200,208 @@ export class TableSiparisDetayComponent {
     }
   }
 
-  async onRowUpdated(updatedRowData: any) {
-    console.warn('updated', updatedRowData.changes[0].data);
-    const updatedRow = updatedRowData.changes.find((rowData: any) => rowData.data);
+  async onRowUpdateOrAdd(rowData: any) {
+    if (rowData.changes[0].type === 'remove') return;
+    const row = rowData.changes.find((rowData: any) => rowData.data);
 
-    const requestData = {
-      spd_primno: updatedRow.key.spd_primno,
-      ...updatedRowData.changes[0].data
-    };
-
-    console.warn(requestData)
-    if (updatedRow.key.spd_sira > 0) {
-      this.spdService.updateSpd(requestData).subscribe(
-        (response) => {
-          console.warn(response);
-          this.toastr.success('Başarıyla güncellendi!');
-        }, (error) => {
-          console.error("BlackSheep Hatası ", error);
-          this.toastr.error('Güncellenirken sorun oluştu');
-        });
+    if (row.key.spd_sira > 0) {
+      this.updateDetail(row.key.sfd_sira, row);
     } else {
       const primno = await this.onSpdPrimno();
-      this.insertSpd(Number(primno), [updatedRow.data]);
+      const dataTalimatColors = await this.onTalimatBosPrimno();
+      const dataProses = await this.onProsesBosPrimno();
+      this.saveDetail(primno.f_id, [row.data], Number(dataTalimatColors.bos_primno), Number(dataProses.bos_primno));
     }
+  }
+
+  async onTalimatBosPrimno(): Promise<any> {
+    const response = await this.bosPrimnoService.getBosPrimNo("colors", this.sirketNo, 402).toPromise();
+    return response;
+  }
+
+  async onProsesBosPrimno(): Promise<any> {
+    const response = await this.bosPrimnoService.getBosPrimNo("proses", this.sirketNo, 402).toPromise();
+    return response;
+  }
+
+  saveDetail(primno: number, data: any, talimatId: any, prosesId: any): void {
+
+    const row = {...data};
+    this.spd = new Spd();
+
+    const model = sessionStorage.getItem('spValues');
+    const parsedModel = JSON.parse(model);
+    let masterId = parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
+    let spno1 = parsedModel.sp_no1 !== undefined ? Number(parsedModel.sp_no1) : 0;
+    let spno2 = parsedModel.sp_no2 !== undefined ? Number(parsedModel.sp_no2) : 0;
+
+    const max = this.spdList.length > 0 ? Math.max(...this.spdList.map(item => item.spd_sira)) + 1 : 1;
+    const spd_spg_primno = Constants.siparisGrubu.find(x => x.viewValue === '').value;
+    const spd_des_primno = Constants.yalitimFitilKodu.find(x => x.viewValue === '').value; //Yalıtım Fitil Kodu
+    const spd_amb_kod = Constants.paketTuru.find(x => x.viewValue === '').value;
+    this.spd.spd_primno = primno === undefined ? 0 : primno;
+    this.spd.spd_sira = max;
+    this.spd.spd_srk_no = this.sirketNo;
+    this.spd.spd_sp_primno = masterId;
+    this.spd.spd_bcmno = parsedModel.sp_bcmno;
+    this.spd.spd_dp_no = this.depo;
+    this.spd.spd_amb_kod = row[0].spd_amb_kod;
+    this.spd.spd_aciklama = row[0].spd_aciklama;
+    this.spd.spd_amb_mkt = row[0].spd_amb_mkt == null ? 0 : Number(row[0].spd_amb_mkt);
+    this.spd.spd_amb_partino = row[0].spd_amb_partino;
+    this.spd.spd_as_iz = row[0].spd_as_iz == null ? 0 : Number(row[0].spd_as_iz);
+    this.spd.spd_asp_no1 = row[0].spd_asp_no1;
+    this.spd.spd_asp_no2 = row[0].spd_asp_no2;
+    this.spd.spd_no1 = spno1;
+    this.spd.spd_no2 = spno2;
+    this.spd.spd_aspd_sira = row[0].spd_aspd_sira == null ? 0 : Number(row[0].spd_aspd_sira);
+    this.spd.spd_bitis = row[0].spd_bitis || 'A';
+    this.spd.spd_birim = row[0].spd_birim || '';
+    this.spd.spd_cektest = row[0].spd_cektest;
+    this.spd.spd_cl_primno = row[0].spd_cl_primno == null ? 1 : Number(row[0].spd_cl_primno);
+    this.spd.spd_des_id2 = row[0].des_id2 == null ? 4 : Number(row[0].des_id2);
+    this.spd.spd_des_primno = (row[0].spd_des_primno || 0) === 0 ? Number(spd_des_primno) : Number(row[0].spd_des_primno);
+    this.spd.spd_donmezlik = row[0].spd_donmezlik == null ? 0 : Number(row[0].spd_donmezlik);
+    this.spd.spd_fire = row[0].spd_fire == null ? 0 : Number(row[0].spd_fire);
+    this.spd.spd_frm_sipno = parsedModel.sp_frm_sipno || 'T5';
+    this.spd.spd_hmetretul = row[0].spd_hmetretul == null ? 0 : Number(row[0].spd_hmetretul);
+    this.spd.spd_dvz_kod = row[0].spd_dvz_kod;
+    this.spd.spd_eb_kod = row[0].spd_eb_kod;
+    this.spd.spd_fayn = row[0].spd_fayn;
+    this.spd.spd_fiyat = row[0].spd_fiyat;
+    this.spd.spd_fyt_id = row[0].spd_fyt_id;
+    this.spd.spd_hmetretul = row[0].spd_hmetretul == null ? 0 : Number(row[0].spd_hmetretul);
+    this.spd.spd_hspbirim = row[0].spd_hspbirim;
+    this.spd.spd_i2 = row[0].spd_i2;
+    this.spd.spd_kartela = row[0].spd_kartela;
+    this.spd.spd_kg_top = row[0].spd_kg_top == null ? 0 : Number(row[0].spd_kg_top);
+    this.spd.spd_kod1 = row[0].spd_kod1;
+    this.spd.spd_kod2 = row[0].spd_kod2;
+    this.spd.spd_lotno = row[0].spd_lotno;
+    this.spd.spd_masraf_tutar = row[0].spd_masraf_tutar;
+    this.spd.spd_mkt = row[0].spd_mkt == null ? 0 : Number(row[0].spd_mkt);
+    this.spd.spd_mm_kod = row[0].spd_mm_kod;
+    this.spd.spd_mm_primno = row[0].spd_mm_primno == null ? 0 : Number(row[0].spd_mm_primno);
+    this.spd.spd_mm_tur = row[0].spd_mm_tur || 0;
+
+    this.spd.spd_mmetretul = row[0].spd_mmetretul == null ? 0 : Number(row[0].spd_mmetretul);
+    this.spd.spd_onay = row[0].spd_onay;
+    this.spd.spd_ormkt_kg = row[0].spd_ormkt_kg == null ? 0 : Number(row[0].spd_ormkt_kg);
+    this.spd.spd_ormkt_mt = row[0].spd_ormkt_mt == null ? 0 : Number(row[0].spd_ormkt_mt);
+    this.spd.spd_ormkt_top = row[0].spd_ormkt_top == null ? 0 : Number(row[0].spd_ormkt_top);
+    this.spd.spd_paket_mkt = row[0].spd_paket_mkt == null ? 0 : Number(row[0].spd_paket_mkt);
+    this.spd.spd_partino = row[0].spd_partino;
+    this.spd.spd_referans = row[0].spd_referans;
+    this.spd.spd_sevk_aciklama = row[0].spd_sevk_aciklama;
+    this.spd.spd_sonuc = row[0].spd_sonuc;
+    this.spd.spd_spg_primno = (row[0].spd_spg_primno || 0) === 0 ? Number(spd_spg_primno) : Number(row[0].spd_spg_primno);
+    this.spd.spd_tertrh = row[0].spd_tertrh || new Date();
+    this.spd.spd_tlmt_kod = row[0].spd_tlmt_kod;
+    this.spd.spd_tolerans = row[0].spd_tolerans;
+    this.spd.spd_tolerans_negatif = row[0].spd_tolerans_negatif == null ? 0 : Number(row[0].spd_tolerans_negatif);
+    this.spd.spd_tolerans_pozitif = row[0].spd_tolerans_pozitif == null ? 0 : Number(row[0].spd_tolerans_pozitif);
+    this.spd.spd_tup_may = row[0].spd_tup_may;
+    this.spd.spd_urtt_id = row[0].spd_urtt_id;
+    this.spd.spd_yuzey = row[0].spd_yuzey;
+    this.spd.spd_yuzey_islem = row[0].spd_yuzey_islem;
+    this.spd.spd_yuzey_kalinlik = row[0].spd_yuzey_kalinlik;
+    this.spd.spd_sipno = (spno2 * 100) + max;
+    this.spd.spd_sde_no = row[0].spd_sde_no || 51;
+    this.spd.spd_frm_kod = parsedModel.sp_frm_kod || '';
+    this.spd.spd_frmd_kod = parsedModel.sp_frmd_kod || '';
+    this.spd.spd_st_kod = parsedModel.sp_st_kod || 0;
+    this.spd.spd_sk_kod = parsedModel.sp_sk_kod || 0;
+    this.spd.spd_gsip_yil = parsedModel.sp_gsip_yil || 0;
+    this.spd.spd_gsip_no = parsedModel.sp_gsip_no || 0;
+    this.spd.spd_gsip_sira = row[0].spd_gsip_sira || 0;
+    this.spd.spd_bmkt = row[0].spd_bmkt || 0;
+    this.spd.spd_mkt_kg = row[0].spd_mkt_kg == null ? 0 : Number(row[0].spd_mkt_kg);
+    this.spd.spd_mkt_mt = row[0].spd_mkt_mt == null ? 0 : Number(row[0].spd_mkt_mt);
+    this.spd.spd_iskonto = row[0].spd_iskonto || 0;
+    this.spd.spd_iskonto2 = row[0].spd_iskonto2 || 0;
+    this.spd.spd_iskonto3 = row[0].spd_iskonto3 || 0;
+    this.spd.spd_hsptur = row[0].spd_hsptur || '';
+    this.spd.spd_vade = row[0].spd_vade || 0;
+    this.spd.spd_tlmt_primno = isNaN(row[0].spd_tlmt_primno) ? talimatId : Number(row[0].spd_tlmt_primno);
+    this.spd.spd_cl_kod = row[0].spd_cl_kod || '';
+    this.spd.spd_des_kod = row[0].spd_des_kod || '';
+    this.spd.spd_hen = row[0].spd_hen || 0;
+    this.spd.spd_men = row[0].spd_men || 0;
+    this.spd.spd_cek = row[0].spd_cek || 0;
+    this.spd.spd_ceken = row[0].spd_ceken || 0;
+    this.spd.spd_cekboy = row[0].spd_cekboy || 0;
+    this.spd.spd_pus = row[0].spd_pus || 0;
+    this.spd.spd_spg_kod = row[0].spd_spg_kod ?? '';
+    this.spd.spd_prs_primno = row[0].spd_prs_primno || 0;
+    this.spd.spd_prs_kod = row[0].spd_prs_kod || '';
+    this.spd.spd_maxen = row[0].spd_maxen || 0;
+    this.spd.spd_minen = row[0].spd_minen || 0;
+    this.spd.uk = this.kullaniciKodu;
+    this.spd.iuk = this.kullaniciKodu;
+    this.spd.updt = new Date();
+    this.spd.idt = new Date();
+    this.spd.spd_siptrh = row[0].spd_siptrh || new Date();
+    this.spd.spd_mak_kod = row[0].spd_mak_kod || '';
+    this.spd.spd_list_fiyat = row[0].spd_list_fiyat || 0;
+    this.spd.spd_vade_farki = row[0].spd_vade_farki || 0;
+    this.spd.spd_list_dvz_kod = row[0].spd_list_dvz_kod || '';
+    this.spd.spd_faiz = row[0].spd_faiz || 0;
+    this.spd.spd_gsip_primno = row[0].spd_gsip_primno || 0;
+    this.spd.spd_dept_no = row[0].spd_dept_no || 0;
+    this.spd.spd_oncelik = row[0].spd_oncelik || 0;
+    this.spd.spd_cfyg_primno = row[0].spd_cfyg_primno || 5;
+    this.spd.spd_cfyg_kod = row[0].spd_cfyg_kod || '';
+    this.spd.spd_label_kod = row[0].spd_label_kod || '';
+    this.spd.spd_ipluz = row[0].spd_ipluz || '';
+    this.spd.spd_rev = row[0].spd_rev || 0;
+    this.spd.spd_prs_primno = prosesId;
+
+    console.warn("insertte", JSON.stringify(this.spd));
+    this.spdService.save(this.spd).subscribe(x => {
+        this.toastr.success('Başarıyla eklendi', '', {
+          positionClass: 'toast-top-right',
+        });
+        this.getDetail();
+      },
+      (error) => {
+        this.toastr.error('Kayıt sırasında hata gerçekleşti.', 'Hata', {
+          positionClass: 'toast-top-right',
+        });
+      });
+  }
+
+  updateDetail(spd_sira: number, data: any): void {
+    const row = {...data};
+    const recordRow = this.spdList.find((x: Spd) => x.spd_sira === spd_sira);
+    this.spd = new Spd();
+    this.spd = recordRow;
+
+    if (row.data && typeof row.data === 'object') {
+      this.spd = {...this.spd, ...row.data};
+    }
+    this.spd.uk = this.kullaniciKodu;
+    this.spd.iuk = this.kullaniciKodu;
+    this.spd.updt = new Date();
+    this.spd.idt = new Date();
+
+    this.spd.Where = [{
+      spd_no1: this.spd.spd_no1,
+      spd_no2: this.spd.spd_no2,
+      spd_primno: this.spd.spd_primno,
+      spd_sira: spd_sira
+    }];
+
+    this.spdService.updateSpd(this.spd).subscribe(x => {
+        this.toastr.success('Güncellendi', '', {
+          positionClass: 'toast-top-right',
+        });
+        this.getDetail();
+      },
+      (error) => {
+        this.toastr.error('Güncelleme sırasında hata gerçekleşti.', 'Hata', {
+          positionClass: 'toast-top-right',
+        });
+      });
 
   }
 
@@ -227,22 +410,12 @@ export class TableSiparisDetayComponent {
     return response[0];
   }
 
-  async findMaxSpdSira(): Promise<number> {
-    let maxSpdSira = 0;
-    for (const item of this.dataSource) {
-      if (item.spd_sira > maxSpdSira) {
-        maxSpdSira = item.spd_sira;
-      }
-    }
-    return maxSpdSira;
-  }
-
   async onRowInserted() {
     const primno = await this.onSpdPrimno();
-    this.insertSpd(Number(primno), this.dataSource);
+    this.insert(Number(primno), this.dataSource);
   }
 
-  insertSpd(primno: number, data: any): void {
+  insert(primno: number, data: any): void {
     const sp = JSON.parse(sessionStorage.getItem('spValues'));
 
     //spd_mm_primno =>  zorunlu alandır(foreign key); Dilaraya sor...
@@ -256,12 +429,10 @@ export class TableSiparisDetayComponent {
     //Empty foreign key...
     const spd_spg_primno = Constants.siparisGrubu.find(x => x.viewValue === '').value;
     const spd_des_primno = Constants.yalitimFitilKodu.find(x => x.viewValue === '').value; //Yalıtım Fitil Kodu
-
-
     const spd_amb_kod = Constants.paketTuru.find(x => x.viewValue === '').value;
 
     data.forEach(async (data) => {
-      await this.findMaxSpdSira();
+      //await this.findMaxSpdSira();
       const spdObject = {
         spd_cfyg_id2: 1,
         spd_primno: data.spd_primno || 0,
@@ -307,7 +478,7 @@ export class TableSiparisDetayComponent {
         spd_partino: data.spd_partino || '',
         spd_referans: data.spd_referans || '',
         spd_sevk_aciklama: data.spd_sevk_aciklama || '',
-        spd_sira: Number((await this.findMaxSpdSira()) + 1),
+        //spd_sira: Number((await this.findMaxSpdSira()) + 1),
         spd_sonuc: data.spd_sonuc || '',
         spd_spg_primno: (data.spd_spg_primno || 0) === 0 ? Number(spd_spg_primno) : Number(data.spd_spg_primno),
         spd_tertrh: data.spd_tertrh || new Date(),
@@ -376,21 +547,23 @@ export class TableSiparisDetayComponent {
         spd_rev: data.spd_rev || 0,
       };
 
-      console.warn("insertte", JSON.stringify(spdObject));
 
-      this.spdService.InsertSpd(spdObject).subscribe(
-        (response) => {
-          console.warn(response);
-          this.toastr.success('Başarıyla eklendi');
-        },
-        (error) => {
-          console.log(error);
-          this.toastr.error('Eklenirken sorun oluştu');
-        },
-      );
+      // this.spdService.InsertSpd(spdObject).subscribe(
+      //   (response) => {
+      //     console.warn(response);
+      //     this.toastr.success('Başarıyla eklendi');
+      //   },
+      //   (error) => {
+      //     console.log(error);
+      //     this.toastr.error('Eklenirken sorun oluştu');
+      //   },
+      // );
     });
   }
 
+  newDetail() {
+    this.spdList = [];
+  }
 
   cellTemplate_spd_bitis(container, options) {
     const value = options.value;
@@ -528,6 +701,45 @@ export class TableSiparisDetayComponent {
     this.cdr.detectChanges();
   }
 
+  getDetail() {
+    const model = sessionStorage.getItem('spValues');
+    const parsedModel = JSON.parse(model);
+    let spd_sp_primno = parsedModel.sp_primno !== undefined ? Number(parsedModel.sp_primno) : 0;
+    
+    const _filterModel = new FilterModel();
+    if ((spd_sp_primno === 0)) return;
+
+    try {
+      _filterModel.filterValue1 = spd_sp_primno;
+      // _filterModel.filterValue2 = mm_primno
+      // _filterModel.filterValue20 = "mm_ad"
+
+
+      this.spdList = [];
+      this.spdService
+        .spdSiparisler(_filterModel).subscribe((response => {
+            response['data'].map(  (x: Spd) => {
+              this.spd = new Spd();
+              this.spd = {...x};
+              // sql sorgu mamlz ve spd ayni anda cekilmesi lazim veri eklendikten sonra
+              
+               //this.spd.compute_mm_ad = this.spd.compute_mm_ad = x.spd_mm_primno !== 0 ? await this.rofMamlzString(x.spd_mm_primno, 'mm_ad') : '';
+              // this.spd.compute_kalan_stok = x.spd_tlmt_kod.startsWith('A')
+              //   ? await this.funcStokSiparisNumber(150, 20, x.spd_mm_primno, x.spd_cl_primno, x.spd_birim,) : 0;
+
+              this.spd.compute_sp_drm = x.spd_tup_may + '' + x.spd_sonuc;
+              this.spd.compute_kalip_drm = x.compute_kalip_drm || '' === '' ? 'Kalıp Yok' : 'Kalıbı Var';
+              this.spdList.push(this.spd);
+              console.log("this.spd ", JSON.stringify(this.spd));
+              console.log("this.spdList ", JSON.stringify(this.spdList));
+            });
+          })
+        );
+    } catch (error) {
+      console.error('Hata gerçekleşti.(Detay)', error);
+    }
+  }
+
   async getDetayData(filterModel: FilterModel): Promise<Spd[]> {
     try {
       const response = await this.spdService
@@ -627,16 +839,12 @@ export class TableSiparisDetayComponent {
     }
   }
 
-  clickedPrimNo: number;
-
   onCellClick(event: any) {
     const cellValue = Constants.displayedColumns[event.columnIndex];
-    console.warn('onCellClick', event.data.spd_sira);
-
     switch (cellValue) {
-      case 'spd_kod1':
+      case 'spd_mm_kod':
         this.clickedPrimNo = event.data.spd_primno;
-        this.openTeklifIdModal();
+        this.openTeklifIdModal(event.rowIndex);
         break;
       default:
         break;
@@ -645,17 +853,31 @@ export class TableSiparisDetayComponent {
 
   onCellKeyDown(e: any) {
     if (e.event.key === 'Enter') {
-      this.onTeklifId(e.event.target.value);
+      this.onTeklifId(e.event.target.value, e.rowIndex);
     }
   }
 
-  onTeklifId(kod1: any): void {
-    console.warn('this.clickedPrimNo', this.clickedPrimNo);
-    console.warn('this.dataSource', this.dataSource);
-    const existingPrimnoIndexNewValues = this.dataSource.findIndex(
-      (val) => val.spd_primno === this.clickedPrimNo,
-    );
-    console.warn('zazaza', existingPrimnoIndexNewValues)
+  openTeklifIdModal(rowIndex: any): void {
+    const dialogRef = this.dialog.open(ModalTeklifIdComponent, {
+      backdropClass: 'custom-backdrop',
+      width: '100%',
+      data: {
+        frm_kod: JSON.parse(sessionStorage.getItem('spValues')).sp_frm_kod,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== undefined) {
+        const indexRow = rowIndex;
+        this.onTeklifId(result.lfyd_kod1, indexRow);
+      }
+    });
+  }
+
+  onTeklifId(kod1: any, rowIndex: any): void {
+    // const existingPrimnoIndexNewValues = this.dataSource.findIndex(
+    //   (val) => val.spd_primno === this.clickedPrimNo,
+    // );
 
     this.lfydService
       .getLfyd(JSON.parse(sessionStorage.getItem('spValues')).sp_frm_kod, kod1)
@@ -666,58 +888,26 @@ export class TableSiparisDetayComponent {
             'mm_birim-mm_mkt_kg',
             true,
           );
-          this.dataSource[existingPrimnoIndexNewValues].spd_kod1 = kod1;
-          this.dataSource[existingPrimnoIndexNewValues].spd_mm_primno =
-            item.lfyd_mm_primno;
-          this.dataSource[existingPrimnoIndexNewValues].spd_mm_kod =
-            item.lfyd_mm_kod;
-          this.dataSource[existingPrimnoIndexNewValues].spd_tlmt_kod =
-            item.lfyd_des_kod;
-          this.dataSource[existingPrimnoIndexNewValues].spd_cl_primno =
-            item.lfyd_cl_primno;
-          this.dataSource[existingPrimnoIndexNewValues].spd_des_primno =
-            item.lfyd_des_primno;
-          this.dataSource[existingPrimnoIndexNewValues].spd_des_kod =
-            item.lfyd_des_kod;
-          this.dataSource[existingPrimnoIndexNewValues].spd_dvz_kod =
-            item.lfyd_dvz_kod;
-          this.dataSource[existingPrimnoIndexNewValues].spd_mm_tur =
-            item.lfyd_mm_tur;
-          this.dataSource[existingPrimnoIndexNewValues].spd_frm_sipno =
-            item.lfyd_acik2;
-          this.dataSource[existingPrimnoIndexNewValues].compute_mm_ad =
-            item.mm_ad;
-          this.dataSource[existingPrimnoIndexNewValues].spd_eb_kod =
-            item.lfyd_kod2;
-          this.dataSource[existingPrimnoIndexNewValues].spd_eb_kod =
-            item.lfyd_kod2;
-          this.dataSource[existingPrimnoIndexNewValues].spd_mmetretul =
-            item.lfyd_grmj;
-          this.dataSource[existingPrimnoIndexNewValues].spd_lotno =
-            item.lfyd_kod1;
-          this.dataSource[existingPrimnoIndexNewValues].spd_hspbirim =
-            item.lfyd_acik1;
-          this.dataSource[existingPrimnoIndexNewValues].spd_birim =
-            mamlz.mm_birim;
-          this.dataSource[existingPrimnoIndexNewValues].spd_hmetretul =
-            mamlz.mm_mkt_kg;
+
+          this.grid.instance.cellValue(rowIndex, 'spd_kod1', kod1);
+          this.grid.instance.cellValue(rowIndex, 'spd_mm_primno', item.lfyd_mm_primno);
+          this.grid.instance.cellValue(rowIndex, 'spd_mm_kod', item.lfyd_mm_kod);
+          this.grid.instance.cellValue(rowIndex, 'spd_tlmt_kod', item.lfyd_des_kod);
+          this.grid.instance.cellValue(rowIndex, 'spd_cl_primno', item.lfyd_cl_primno);
+          this.grid.instance.cellValue(rowIndex, 'spd_des_primno', item.lfyd_des_primno);
+          this.grid.instance.cellValue(rowIndex, 'spd_des_kod', item.lfyd_des_kod);
+          this.grid.instance.cellValue(rowIndex, 'spd_dvz_kod', item.lfyd_dvz_kod);
+          this.grid.instance.cellValue(rowIndex, 'spd_mm_tur', item.lfyd_mm_tur);
+          this.grid.instance.cellValue(rowIndex, 'spd_frm_sipno', item.lfyd_acik2);
+          this.grid.instance.cellValue(rowIndex, 'compute_mm_ad', item.mm_ad);
+          this.grid.instance.cellValue(rowIndex, 'spd_eb_kod', item.lfyd_kod2);
+          this.grid.instance.cellValue(rowIndex, 'spd_mmetretul', item.lfyd_grmj);
+          this.grid.instance.cellValue(rowIndex, 'spd_lotno', item.lfyd_kod1);
+          this.grid.instance.cellValue(rowIndex, 'spd_hspbirim', item.lfyd_acik1);
+          this.grid.instance.cellValue(rowIndex, 'spd_birim', mamlz.mm_birim);
+          this.grid.instance.cellValue(rowIndex, 'spd_hmetretul', mamlz.mm_mkt_kg);
         });
       });
-  }
-
-  openTeklifIdModal(): void {
-    const dialogRef = this.dialog.open(ModalTeklifIdComponent, {
-      backdropClass: 'custom-backdrop',
-      width: '100%',
-      data: {
-        frm_kod: JSON.parse(sessionStorage.getItem('spValues')).sp_frm_kod,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.warn('result.lfyd_kod1', result.lfyd_kod1);
-      this.onTeklifId(result.lfyd_kod1);
-    });
   }
 
   customRound(value) {

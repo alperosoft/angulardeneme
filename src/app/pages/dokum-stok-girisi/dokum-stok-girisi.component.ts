@@ -128,7 +128,6 @@ export class DokumStokGirisiComponent implements OnInit {
       this.events.unshift(eventName)
       if (this.events.unshift(eventName) !== 1)
         event.data.sfd_sira = 0;
-
     } else {
       this.toastr.info('Lütfen ilk önce masterı kaydediniz.', ' ', {
         positionClass: 'toast-bottom-full-width',
@@ -139,11 +138,8 @@ export class DokumStokGirisiComponent implements OnInit {
   }
 
   async onRowUpdateOrAdd(rowData: any): Promise<void> {
-
     if (rowData.changes[0].type === 'remove') return;
-
     const row = rowData.changes.find((x: any) => x.data);
-
     if (row.key.sfd_sira > 0) {
       this.updateDetail(row.key.sfd_sira, row);
     } else {
@@ -155,7 +151,6 @@ export class DokumStokGirisiComponent implements OnInit {
       this.saveDetail(Number(data.f_id), [row.data], Number(dataColors.bos_primno), Number(dataTalimatColors.bos_primno), Number(dataProses.bos_primno));
     }
   }
-
   updateDetail(sfd_sira: number, data: any): void {
     const row = {...data};
     const recordRow = this.stkfdTops.find((x: Stkfdtop) => x.sfd_sira === sfd_sira);
@@ -192,7 +187,6 @@ export class DokumStokGirisiComponent implements OnInit {
         });
       });
   }
-
   saveDetail(primno: number, data: any, colorsBosPrimno: number, talimatBosPrimno: number, prosesPrimNo: number): void {
     const row = {...data};
 
@@ -242,6 +236,7 @@ export class DokumStokGirisiComponent implements OnInit {
         this.toastr.error('Kayıt sırasında hata gerçekleşti.', 'Hata', {
           positionClass: 'toast-top-right',
         });
+
       });
   }
 

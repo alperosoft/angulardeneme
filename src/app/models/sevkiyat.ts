@@ -11,4 +11,6 @@ export class Sevkiyat{
     sk_ad?:string
     sk_grp_primno?:number
     sk_grp_kod?:number
+    cmpt_sfd_mkt? :number
+    sfd_ay?:string
 }

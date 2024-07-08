@@ -18,24 +18,43 @@
     </dx-tree-view>
   </div>
 
+<!-- 
+    <dx-tree-view
+      [items]="menu"
+      keyExpr="path"
+      selectionMode="single"
+      [focusStateEnabled]="false"
+      expandEvent="click"
+      width="100%">
+      <ng-container *dxTemplate="let data of 'item'">
+        <div class="menu-item">
+          <span (click)="navigateToPage(data)">{{ data.text }}</span>
+          <span class="drag-icon" *ngIf="!data.items || data.items.length === 0">
 
-  <!--  <dx-tree-view-->
-  <!--    [items]="menu"-->
-  <!--    keyExpr="path"-->
-  <!--    selectionMode="single"-->
-  <!--    [focusStateEnabled]="false"-->
-  <!--    expandEvent="click"-->
-  <!--    width="100%">-->
-  <!--    <ng-container *dxTemplate="let data of 'item'">-->
-  <!--      <div class="menu-item">-->
-  <!--        <span (click)="navigateToPage(data)">{{ data.text }}</span>-->
-  <!--        <span class="drag-icon" *ngIf="!data.items || data.items.length === 0">-->
+          <i class="fa-solid fa-grip-vertical" (click)="onDragStart($event, data)"></i>
+            </span>
+        </div>
+      </ng-container>
+    </dx-tree-view> -->
 
-  <!--        <i class="fa-solid fa-grip-vertical" (click)="onDragStart($event, data)"></i>-->
-  <!--          </span>-->
-  <!--      </div>-->
-  <!--    </ng-container>-->
-  <!--  </dx-tree-view>-->
+
+     <dx-tree-view
+      [items]="menu"
+      keyExpr="path"
+      selectionMode="single"
+      [focusStateEnabled]="false"
+      expandEvent="click"
+      width="100%">
+      <ng-container *dxTemplate="let data of 'item'">
+        <div class="menu-item">
+          <span (click)="navigateToPage(data)">{{ data.text }}</span>
+          <span class="drag-icon" *ngIf="!data.items || data.items.length === 0">
+
+          <!-- <i class="fa-solid fa-grip-vertical" (click)="onDragStart($event, data)"></i> -->
+            </span>
+        </div>
+      </ng-container>
+    </dx-tree-view>
 </div>
 
 

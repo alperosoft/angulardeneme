@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, DecimalPipe} from '@angular/common';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -52,6 +52,7 @@ import {DxLoadIndicatorModule} from "devextreme-angular";
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
+  providers: [DecimalPipe]
 })
 export class ModalFisnoTableComponent implements OnInit {
   displayedColumns: string[] = [
@@ -104,6 +105,7 @@ export class ModalFisnoTableComponent implements OnInit {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ModalFisnoTableComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private decimalPipe: DecimalPipe,
     private Sp: SpdService,
   ) {
     this.saveAs = data.saveAs;
@@ -134,12 +136,15 @@ export class ModalFisnoTableComponent implements OnInit {
       } else {
         return 0;
       }
-    } else if (columnName === 'compute_bakiye_miktar') {
+      }
+    else if (columnName === 'compute_bakiye_miktar') {
       const spd_mkt = item['spd_mkt'];
       const spd_smkt_kg = item['spd_smkt_kg'];
 
       return spd_mkt > spd_smkt_kg ? spd_mkt - spd_smkt_kg : 0;
-    } else if (columnName === 'compute_ambalaj_ad') {
+    }
+    else{
+    } if (columnName === 'compute_ambalaj_ad') {
       const spd_amb_kod = item['spd_amb_kod'];
 
       // return spd_amb_kod !== '' ? rof_ambalaj_string(spd_amb_kod, 'ab_ad') : '';

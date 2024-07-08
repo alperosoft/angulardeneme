@@ -1,4 +1,4 @@
-import {Component, Inject, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   MAT_DIALOG_DATA,
@@ -44,9 +44,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
   styleUrl: './teklif-id.component.scss'
 })
 
-export class ModalTeklifIdComponent {
+export class ModalTeklifIdComponent implements OnInit{
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
 
   selectedColumn: string = '';
   saveAs: string = '';
@@ -90,6 +89,15 @@ export class ModalTeklifIdComponent {
     'Döviz Birimi',
   ];
 
+  constructor(
+    public dialogRef: MatDialogRef<ModalTeklifIdComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private lfydService: LfydService,
+    private colorService: ColorsService,
+  ) {
+    this.saveAs = data.saveAs;
+    this.frm_kod = data.frm_kod;
+  }
 
   ngOnInit() {
     this.lfydService.getLfyd(this.frm_kod).subscribe(
@@ -120,16 +128,6 @@ export class ModalTeklifIdComponent {
 
   applyFilter() {
     this.dataSource.filter = this.searchText.trim().toLowerCase();
-  }
-
-  constructor(
-    public dialogRef: MatDialogRef<ModalTeklifIdComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private lfydService: LfydService,
-    private colorService: ColorsService,
-  ) {
-    this.saveAs = data.saveAs;
-    this.frm_kod = data.frm_kod;
   }
 
   onClose(): void {

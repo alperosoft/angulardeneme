@@ -30,11 +30,4 @@ export class GnstrService {
       `${url}/Gnstr/gnstr/${localStorage.getItem('srk_no')}/${gs_primno}`,
     );
   }
-
-  public getGnstr4(): Observable<Gnstr[]> {
-    const gs_primno = ["92","93","94","95","96"];
-    return this.http.post<Gnstr[]>(
-      `${url}/Gnstr/${localStorage.getItem('srk_no')}`, gs_primno
-    );
-  }
 }

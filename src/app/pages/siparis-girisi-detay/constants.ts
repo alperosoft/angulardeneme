@@ -6,10 +6,10 @@ interface Select {
 export const displayedColumns: string[] = [
   'spd_sira',
   'spd_urtt_id',
-  'spd_kod1',
+  // 'spd_kod1',
+  'spd_mm_kod',
   'spd_kartela',
   'spd_partino',
-  'spd_mm_kod',
   'compute_mm_ad', // IF
   'spd_tlmt_kod',
   'spd_yuzey',

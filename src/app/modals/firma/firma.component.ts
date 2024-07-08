@@ -1,5 +1,6 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import {
   MAT_DIALOG_DATA,
@@ -37,11 +38,12 @@ import {Firma} from 'src/app/models/firma';
     MatNativeDateModule,
     MatIconModule,
     MatTableModule,
+    MatProgressSpinnerModule,
     MatDialogModule,],
   templateUrl: './firma.component.html',
   styleUrl: './firma.component.scss'
 })
-export class ModalFirmaComponent {
+export class ModalFirmaComponent implements OnInit {
   displayedColumns: string[] = [
     'frm_kod',
     'frm_ad',
@@ -67,13 +69,18 @@ export class ModalFirmaComponent {
   selectedColumn: string = '';
   saveAs: string = '';
   searchText: string = '';
+  isDetailLoading: boolean = true;
 
   dataSource: MatTableDataSource<Firma>;
 
   ngOnInit() {
+    this.isDetailLoading = true;
+
     this.firmaService.getSirket().subscribe(
       (response: any) => {
         this.dataSource = new MatTableDataSource<Firma>(response.data);
+        this.isDetailLoading = false;
+
       },
       (error) => {
         console.error('Firma çekme hatası:', error);
@@ -84,23 +91,19 @@ export class ModalFirmaComponent {
   onRowClick(row: any): void {
     this.selectedColumn = row;
   }
-
   applyFilter() {
     this.dataSource.filter = this.searchText.trim().toLowerCase();
   }
-
   constructor(
     public dialogRef: MatDialogRef<ModalFirmaComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private firmaService: FirmaService,
   ) {
-    this.saveAs = data.saveAs;
+    //this.saveAs = data.saveAs;
   }
-
   onClose(): void {
     this.dialogRef.close(this.selectedColumn);
   }
-
   onAdd(): void {
     this.dialogRef.close(this.selectedColumn);
   }

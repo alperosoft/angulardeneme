@@ -3,58 +3,32 @@
     <mat-tab label="1-Sipariş">
       <div style="overflow: auto">
         <dx-data-grid
+          #grid
           id="gridContainer"
-          [dataSource]="dataSource"
+          [dataSource]="spdList"
           [showBorders]="true"
           [allowColumnResizing]="true"
+          [columnResizingMode]="'widget'"
           noDataText="Veri Yok" height="300px"
-          [hoverStateEnabled]="true"
           (onCellDblClick)="onCellClick($event)"
-          (onSaving)="onRowUpdated($event)"
+          (onSaving)="onRowUpdateOrAdd($event)"
           (onInitNewRow)="handleRowInserted('InitNewRow',$event)"
+          (onEditingStart)="editingStart($event.data)"  
         >
-
-          <!--(onRowInserted)="onRowInserted($event.data)"-->
-          <dxo-editing [allowAdding]="true" [allowUpdating]="true" mode="row">
+          <dxo-editing
+            mode="row"
+            [allowUpdating]="true"
+            [allowDeleting]="true"
+            [allowAdding]="true"
+          >
           </dxo-editing>
-
           <dxo-toolbar>
-            <!-- <dxi-item
-              location="before"
-              (click)="copySpdRow()"
-              class="dx-button copy-button"
-              style="border-color: #ddd"
-              ><i
-                style="padding: 8px; color: #333"
-                class="dx-icon dx-icon-copy"
-              ></i>
-            </dxi-item> -->
-
             <dxi-item name="addRowButton"></dxi-item>
             <dxi-item name="saveButton"></dxi-item>
             <dxi-item name="revertButton"></dxi-item>
           </dxo-toolbar>
 
           <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
-
-          <!--
-          <dxo-toolbar>
-            <dxi-item location="after" >
-              <dx-button name="edit"
-                ><i class="dx-icon-plus"></i
-              ></dx-button>
-            </dxi-item>
-
-          </dxo-toolbar> -->
-
-          <!-- <dxi-button name="edit"></dxi-button>
-            <dxi-button name="delete"></dxi-button>
-            <dxi-button
-                text="My Command"
-                icon="/url/to/my/icon.ico"
-                hint="My Command">
-            </dxi-button> -->
-
           <dxi-column
             dataField="spd_sira"
             caption="Sıra"
@@ -71,32 +45,50 @@
             ></dxo-lookup>
           </dxi-column>
 
+<!--          <dxi-column-->
+<!--            dataField="spd_kod1"-->
+<!--            caption="Alaşım"-->
+<!--            [width]="100"-->
+<!--            [setCellValue]="setCellValue"-->
+<!--            [editorOptions]="{ onKeyDown: onCellKeyDown.bind(this) }"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_kartela"-->
+<!--            caption="Kod"-->
+<!--            [width]="100"-->
+<!--          ></dxi-column>-->
+
           <dxi-column
-            dataField="spd_kod1"
-            caption="Teklif Id"
+            dataField="spd_mm_kod"
+            caption="Alaşım"
             [width]="100"
             [setCellValue]="setCellValue"
             [editorOptions]="{ onKeyDown: onCellKeyDown.bind(this) }"
           ></dxi-column>
+
+<!--          <dxi-column-->
+<!--            dataField="spd_mm_kod"-->
+<!--            caption="Profil No"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+
           <dxi-column
-            dataField="spd_kartela"
-            caption="Kod"
-            [width]="100"
-          ></dxi-column>
-          <dxi-column
-            dataField="spd_partino"
-            caption="Stok Parti No"
+            dataField="spd_mm_primno"
+            [visible]="false"
+            caption="malzemeId"
             [width]="120"
           ></dxi-column>
-          <dxi-column
-            dataField="spd_mm_kod"
-            caption="Profil No"
-            [width]="120"
-          ></dxi-column>
+
           <dxi-column
             dataField="compute_mm_ad"
             caption="Adı"
             [width]="150"
+          ></dxi-column>
+
+          <dxi-column
+            dataField="spd_partino"
+            caption="Stok Parti No"
+            [width]="120"
           ></dxi-column>
           <dxi-column
             dataField="spd_tlmt_kod"
@@ -279,7 +271,6 @@
               valueExpr="value"
             ></dxo-lookup>
           </dxi-column>
-
           <dxi-column
             dataType="boolean"
             dataField="spd_bitis"
@@ -301,7 +292,6 @@
             width="100"
             [cellTemplate]="cellTemplate_spd_fayn"
           ></dxi-column>
-
           <dxi-column
             dataField="spd_tertrh"
             caption="Termin Tarihi"
@@ -364,7 +354,6 @@
               valueExpr="value"
             ></dxo-lookup>
           </dxi-column>
-
           <dxi-column
             dataField="spd_spg_primno"
             caption="Sipariş Grubu"
@@ -376,7 +365,6 @@
               valueExpr="value"
             ></dxo-lookup>
           </dxi-column>
-
           <dxi-column
             dataField="compute_sp_drm"
             caption="Sipariş Durumu"
@@ -466,12 +454,482 @@
             caption="Minimum Stok Boy Adedi"
             [width]="180"
           ></dxi-column>
-
           <dxo-toolbar>
             <dxi-item name="addRowButton" showText="always"></dxi-item>
           </dxo-toolbar>
 
         </dx-data-grid>
+
+<!--        <dx-data-grid-->
+<!--          id="gridContainer"-->
+<!--          [dataSource]="dataSource"-->
+<!--          [showBorders]="true"-->
+<!--          [allowColumnResizing]="true"-->
+<!--          noDataText="Veri Yok" height="300px"-->
+<!--          [hoverStateEnabled]="true"-->
+<!--          (onCellDblClick)="onCellClick($event)"-->
+<!--          (onSaving)="onRowUpdated($event)"-->
+<!--          (onInitNewRow)="handleRowInserted('InitNewRow',$event)"-->
+<!--        >-->
+
+<!--          &lt;!&ndash;(onRowInserted)="onRowInserted($event.data)"&ndash;&gt;-->
+<!--          <dxo-editing [allowAdding]="true" [allowUpdating]="true" mode="row">-->
+<!--          </dxo-editing>-->
+
+<!--          <dxo-toolbar>-->
+<!--            &lt;!&ndash; <dxi-item-->
+<!--              location="before"-->
+<!--              (click)="copySpdRow()"-->
+<!--              class="dx-button copy-button"-->
+<!--              style="border-color: #ddd"-->
+<!--              ><i-->
+<!--                style="padding: 8px; color: #333"-->
+<!--                class="dx-icon dx-icon-copy"-->
+<!--              ></i>-->
+<!--            </dxi-item> &ndash;&gt;-->
+
+<!--            <dxi-item name="addRowButton"></dxi-item>-->
+<!--            <dxi-item name="saveButton"></dxi-item>-->
+<!--            <dxi-item name="revertButton"></dxi-item>-->
+<!--          </dxo-toolbar>-->
+
+<!--          <dxo-column-chooser [enabled]="true"></dxo-column-chooser>-->
+
+<!--          &lt;!&ndash;-->
+<!--          <dxo-toolbar>-->
+<!--            <dxi-item location="after" >-->
+<!--              <dx-button name="edit"-->
+<!--                ><i class="dx-icon-plus"></i-->
+<!--              ></dx-button>-->
+<!--            </dxi-item>-->
+
+<!--          </dxo-toolbar> &ndash;&gt;-->
+
+<!--          &lt;!&ndash; <dxi-button name="edit"></dxi-button>-->
+<!--            <dxi-button name="delete"></dxi-button>-->
+<!--            <dxi-button-->
+<!--                text="My Command"-->
+<!--                icon="/url/to/my/icon.ico"-->
+<!--                hint="My Command">-->
+<!--            </dxi-button> &ndash;&gt;-->
+
+<!--          <dxi-column-->
+<!--            dataField="spd_sira"-->
+<!--            caption="Sıra"-->
+<!--            [allowEditing]="false"-->
+<!--            [width]="80"-->
+<!--          >-->
+<!--          </dxi-column>-->
+
+<!--          <dxi-column dataField="spd_urtt_id" [width]="100" caption="Sistem">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="[{ value: '', viewValue: '' }]"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+
+<!--          <dxi-column-->
+<!--            dataField="spd_kod1"-->
+<!--            caption="Alaşım"-->
+<!--            [width]="100"-->
+<!--            [setCellValue]="setCellValue"-->
+<!--            [editorOptions]="{ onKeyDown: onCellKeyDown.bind(this) }"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_kartela"-->
+<!--            caption="Kod"-->
+<!--            [width]="100"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_partino"-->
+<!--            caption="Stok Parti No"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_mm_kod"-->
+<!--            caption="Profil No"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="compute_mm_ad"-->
+<!--            caption="Adı"-->
+<!--            [width]="150"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_tlmt_kod"-->
+<!--            caption="Ürün Tipi"-->
+<!--            [width]="120"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.urunTipi"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column dataField="spd_yuzey" [width]="100" caption="Yüzey">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_yuzey"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column dataField="spd_cektest" [width]="90" caption="Mat Parlak">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_cektest"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column dataField="spd_cl_primno" caption="Renk" [width]="120">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.colors"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_des_id2"-->
+<!--            caption="Kaplama Kodu"-->
+<!--            [width]="120"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.colors"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_kg_top"-->
+<!--            caption="Paket İçi Miktari"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_paket_mkt"-->
+<!--            caption="Paket Miktarı"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_ormkt_mt"-->
+<!--            caption="Birim Boy Inch/ft"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column dataField="spd_amb_partino" caption="Birim" [width]="80">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_amb_partino"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_mmetretul"-->
+<!--            caption="Birim Boy(mt)"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_amb_mkt"-->
+<!--            caption="Boy Adedi"-->
+<!--            [width]="100"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_mkt"-->
+<!--            caption="Miktar"-->
+<!--            [width]="100"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_birim"-->
+<!--            caption="Birim"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_ormkt_kg"-->
+<!--            caption="Miktar (lb)"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="compute_stok"-->
+<!--            caption="Kalan Stok"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_hmetretul"-->
+<!--            caption="Çevre (mm)"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_donmezlik"-->
+<!--            caption="Tolerans (-mm)"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_fire"-->
+<!--            caption="Tolerans (%)"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_tolerans_pozitif"-->
+<!--            caption="Tolerans (+)"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_tolerans_negatif"-->
+<!--            caption="Tolerans (-)"-->
+<!--            [width]="90"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column dataField="spd_as_iz" [width]="90" caption="Askı İzi">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_as_iz"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_as_oriz"-->
+<!--            [width]="100"-->
+<!--            caption="Askı Orta İzi"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_as_oriz"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_des_primno"-->
+<!--            caption="Yalıtım Fitil Kodu"-->
+<!--            [width]="120"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.yalitimFitilKodu"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column dataField="spd_kod2" caption="Koruma Bandı" [width]="120">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.korumaBandi"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_amb_kod"-->
+<!--            caption="Paket Türü"-->
+<!--            [width]="100"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.paketTuru"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column dataField="spd_eb_kod" caption="Alaşım" [width]="90">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.alasim"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup> </dxi-column-->
+<!--          >>-->
+<!--          <dxi-column dataField="spd_frm_sipno" [width]="150" caption="Termik">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_frm_sipno"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+
+<!--          <dxi-column-->
+<!--            dataType="boolean"-->
+<!--            dataField="spd_bitis"-->
+<!--            caption="Bitiş"-->
+<!--            width="80"-->
+<!--            [cellTemplate]="cellTemplate_spd_bitis"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataType="boolean"-->
+<!--            dataField="spd_onay"-->
+<!--            caption="Devam Onayı"-->
+<!--            width="100"-->
+<!--            [cellTemplate]="cellTemplate_spd_onay"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataType="boolean"-->
+<!--            dataField="spd_fayn"-->
+<!--            caption="Pres Üretim"-->
+<!--            width="100"-->
+<!--            [cellTemplate]="cellTemplate_spd_fayn"-->
+<!--          ></dxi-column>-->
+
+<!--          <dxi-column-->
+<!--            dataField="spd_tertrh"-->
+<!--            caption="Termin Tarihi"-->
+<!--            [width]="150"-->
+<!--            dataType="date"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_tertrh2"-->
+<!--            caption="Termin Tarihi 2"-->
+<!--            [width]="150"-->
+<!--            dataType="date"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_masraf_tutar"-->
+<!--            caption="Satınalma Limiti TL"-->
+<!--            [width]="150"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column dataField="spd_tolerans" [width]="150" caption="LME">-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_tolerans"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_dvz_kod"-->
+<!--            caption="Döviz Birimi"-->
+<!--            [width]="100"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.doviz"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_fiyat"-->
+<!--            caption="Fiyat"-->
+<!--            [width]="100"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_hspbirim"-->
+<!--            caption="Hesap Birimi"-->
+<!--            [width]="120"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.hesapBirimi"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_fyt_id"-->
+<!--            caption="Fiyatlandırma Türü"-->
+<!--            [width]="150"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.fiyat"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+
+<!--          <dxi-column-->
+<!--            dataField="spd_spg_primno"-->
+<!--            caption="Sipariş Grubu"-->
+<!--            [width]="150"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.siparisGrubu"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+
+<!--          <dxi-column-->
+<!--            dataField="compute_sp_drm"-->
+<!--            caption="Sipariş Durumu"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_referans"-->
+<!--            caption="Üretim Yeri"-->
+<!--            [width]="90"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.uretimYeri"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_lotno"-->
+<!--            caption="Detay Referans"-->
+<!--            [width]="250"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_aciklama"-->
+<!--            caption="Açıklama"-->
+<!--            [width]="250"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_sevk_aciklama"-->
+<!--            caption="Sevkiyat Açıklama"-->
+<!--            [width]="250"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_yuzey_islem"-->
+<!--            [width]="150"-->
+<!--            caption="Yüzey İşlem"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_yuzey_islem"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_yuzey_kalinlik"-->
+<!--            [width]="150"-->
+<!--            caption="Yüzey Kalınlığı"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_yuzey_kalinlik"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="compute_kalip_drm"-->
+<!--            caption="Kalıp Durum"-->
+<!--            [width]="150"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_asp_no1"-->
+<!--            caption="Ent.Sipariş Yıl"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_asp_no2"-->
+<!--            caption="Ent.Sipariş No"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_aspd_sira"-->
+<!--            caption="Ent.Sipariş Sıra"-->
+<!--            [width]="120"-->
+<!--          ></dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_i2"-->
+<!--            [width]="250"-->
+<!--            caption="Termin Gecikme Nedeni"-->
+<!--          >-->
+<!--            <dxo-lookup-->
+<!--              [dataSource]="Constants.spd_i2"-->
+<!--              displayExpr="viewValue"-->
+<!--              valueExpr="value"-->
+<!--            ></dxo-lookup>-->
+<!--          </dxi-column>-->
+<!--          <dxi-column-->
+<!--            dataField="spd_ormkt_top"-->
+<!--            caption="Minimum Stok Boy Adedi"-->
+<!--            [width]="180"-->
+<!--          ></dxi-column>-->
+
+<!--          <dxo-toolbar>-->
+<!--            <dxi-item name="addRowButton" showText="always"></dxi-item>-->
+<!--          </dxo-toolbar>-->
+
+<!--        </dx-data-grid>-->
       </div>
     </mat-tab>
 <!--    <mat-tab label="2-Fiyat">Fiyat Tablo</mat-tab>-->

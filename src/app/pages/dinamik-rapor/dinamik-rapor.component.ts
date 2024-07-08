@@ -177,7 +177,7 @@ export class DinamikRaporComponent implements OnInit {
           this.whereBetweenInputNumeric + this.whereBasicInput + this.whereBetweenInput
 
         let s = whereValues === '' ? 'a' : whereValues;
-        this.getData(516, s);
+        this.getData(9, s);
       },
     };
     this.clearButtonOptions = {
