@@ -1,0 +1,106 @@
+.flex {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.foot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .grid,
+  .foot {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.example-full-width.mat-mdc-form-field-bottom-align::before {
+  display: none !important;
+}
+
+
+::ng-deep .centered-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+::ng-deep #medium-indicator {
+  vertical-align: middle;
+  margin-right: 10px;
+  top: 50%;
+  left: 50%;
+
+}
+
+#grid {
+  height: 500px;
+}
+
+.options {
+  padding: 20px;
+  margin-top: 20px;
+  background-color: rgba(191, 191, 191, 0.15);
+}
+
+.caption {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.option {
+  margin-top: 10px;
+}
+
+.option > span {
+  margin-right: 10px;
+}
+
+.option > .dx-widget {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.content-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+}
+
+.text-container {
+  /* Sağ tarafa hizalanması için flex-grow kullanılıyor */
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.end-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e88e5;
+}
+
+//::ng-deep .dx-datagrid-header-panel {
+//  background: #e6e3e37a !important;
+//}
+//
+//::ng-deep .dx-datagrid-headers, {
+//   background: #00ffff57 !important;
+//}

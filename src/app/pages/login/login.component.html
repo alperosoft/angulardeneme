@@ -1,0 +1,50 @@
+<div class="flex justify-center h-screen w-full items-center gap-5">
+  <div class="items">
+    <div>
+      <img
+        class="image"
+        src="../../assets/images/osoftyazılımlogin.png"
+        alt="Resim Yok"
+      />
+    </div>
+    <form [formGroup]="contactForm">
+      <div>
+        <div>
+          <mat-form-field>
+            <mat-label>Şirket Seçiniz</mat-label>
+            <mat-select formControlName="srk_ad">
+              <mat-option
+                *ngFor="let sirket of companies"
+                [value]="sirket.srk_ad"
+              >
+                {{ sirket.srk_ad }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Kullanıcı Adı</mat-label>
+            <input type="text" formControlName="kullanici_adi" matInput />
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Şifre</mat-label>
+            <input type="password" formControlName="sifre" matInput />
+          </mat-form-field>
+        </div>
+        <div class="">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="onLogin()"
+            style="width: 100%; height: 50px"
+          >
+            Giriş Yap
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

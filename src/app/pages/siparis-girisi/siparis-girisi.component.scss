@@ -1,0 +1,68 @@
+.flex {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.foot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .grid,
+  .foot {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.example-full-width.mat-mdc-form-field-bottom-align::before {
+  display: none !important;
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 999;
+}
+
+textarea {
+  resize: none;
+}
+
+
+.content-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+}
+
+.text-container {
+  /* Sağ tarafa hizalanması için flex-grow kullanılıyor */
+  flex-grow: 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.end-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e88e5;
+}

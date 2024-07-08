@@ -1,0 +1,34 @@
+//.drag-icon {
+//  cursor: move;
+//  margin-left: auto;
+//}
+//
+//.menu-item {
+//  display: flex;
+//  justify-content: space-between; /* Menü öğelerini yatayda sağa ve sola doğru yerleştir */
+//  align-items: center; /* Menü öğelerini dikeyde ortala */
+//}
+//
+//.container {
+//  display: flex;
+//  flex-direction: column;
+//  height: 100vh;
+//  justify-content: center; /* İçeriği dikeyde ortala */
+//  align-items: center; /* İçeriği yatayda ortala */
+//}
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 5px; /* İstediğiniz kadar iç boşluk */
+}
+
+.menu-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.icon {
+  font-size: 8px; /* İkonun boyutunu ayarlayabilirsiniz */
+  margin-right: 10px; /* İkon ile metin arasındaki boşluk */
+}

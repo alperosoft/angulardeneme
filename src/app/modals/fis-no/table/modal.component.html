@@ -1,0 +1,85 @@
+
+<!--@if (loadIndicatorVisible) {-->
+<!--  <div class="centered-indicator">-->
+<!--    <dx-load-indicator-->
+<!--      id="medium-indicator"-->
+<!--      height="40"-->
+<!--      width="40"-->
+
+<!--      [visible]="loadIndicatorVisible"-->
+<!--    ></dx-load-indicator>-->
+<!--  </div>-->
+<!--} @else {-->
+<div class="modal-siparisler">
+  <div class="header-siparisler">
+    <div><h4>Sipariş Bilgileri</h4></div>
+    <div>
+      <button
+        (click)="onClose()"
+        mat-icon-button
+        aria-label="Example icon button with a vertical three dot icon"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="table">
+    <table
+      mat-table
+      class="mat-elevation-z8"
+      style="width: 120px"
+      [dataSource]="dataSource"
+    >
+      <ng-container
+        *ngFor="let column of displayedColumns"
+        [matColumnDef]="column"
+      >
+        <th mat-header-cell *matHeaderCellDef>
+          {{ columns[displayedColumns.indexOf(column)] }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns; let i = index"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="onRowClick(row)"
+        [style.backgroundColor]="
+          selectedColumn === row ? 'rgb(0, 0, 0, 10%)' : ''
+        "
+      ></tr>
+    </table>
+
+  </div>
+  <div class="footer">
+
+    <div>
+      <mat-form-field>
+        <mat-label>Ara</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (ngModelChange)="applyFilter()"
+        />
+      </mat-form-field>
+    </div>
+    <div class="buttons">
+      <div>
+        <button mat-raised-button (click)="openModal()">Süz</button>
+      </div>
+      <div>
+        <button mat-raised-button (click)="onAdd()">Seçim</button>
+      </div>
+      <div>
+        <button mat-raised-button (click)="onClose()">Çıkış</button>
+      </div>
+    </div>
+    <br>
+    <mat-paginator [pageSizeOptions]="[8, 15, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
+<!--}-->

@@ -1,0 +1,32 @@
+export class Firmagrp {
+    srk_no: number;
+    frmg_kod: string;
+    frmg_ad: string = "";
+    frmg_iskonto: number = 0;
+    frmg_iskonto2: number = 0;
+    frmg_vade: number = 0;
+    frmg_faiz: number = 0;
+    uk: string = "";
+    updt: Date | null = null;
+    iuk: string = "";
+    idt: Date | null = null;
+    frmg_ahes: number = 0;
+    frmg_ahes_r1: number = 0;
+    frmg_ahes_r2: number = 0;
+    frmg_kcek: number = 0;
+    frmg_kcek_r1: number = 0;
+    frmg_kcek_r2: number = 0;
+    frmg_mcek: number = 0;
+    frmg_mcek_r1: number = 0;
+    frmg_mcek_r2: number = 0;
+    frmg_irs: number = 0;
+    frmg_irs_r1: number = 0;
+    frmg_irs_r2: number = 0;
+    frmg_sips: number = 0;
+    frmg_sips_r1: number = 0;
+    frmg_sips_r2: number = 0;
+    frmg_sipo: number = 0;
+    frmg_sipo_r1: number = 0;
+    frmg_sipo_r2: number = 0;
+    frmg_nlimit: number = 0;
+}

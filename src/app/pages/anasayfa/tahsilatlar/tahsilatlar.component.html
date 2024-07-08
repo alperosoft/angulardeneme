@@ -1,0 +1,42 @@
+<br>
+
+<dx-chart id="chart" [dataSource]="stkfsTahsilat" palette="bright">
+  <dxo-title text="Tahsilatlar"></dxo-title>
+  <dxo-common-series-settings
+    [ignoreEmptyPoints]="true"
+    argumentField="sf_trh"
+    type="bar"
+    valueField="cmpt_sf_isl_tutar"
+  ></dxo-common-series-settings>
+
+  <dxi-value-axis>
+    <dxo-grid [visible]="true"></dxo-grid>
+  </dxi-value-axis>
+
+  <dxo-series-template
+    nameField="cmpt_sf_isl_tutar"
+  ></dxo-series-template>
+  <dxo-legend [visible]="false"></dxo-legend>
+  <dxo-zoom-and-pan
+    valueAxis="both"
+    argumentAxis="both"
+    [dragToZoom]="true"
+    [allowMouseWheel]="true"
+    panKey="shift"
+  ></dxo-zoom-and-pan>
+  <dxo-export [enabled]="true"></dxo-export>
+  <dxo-tooltip [zIndex]="100"
+               [enabled]="true"
+               [customizeTooltip]="customizeTooltip"
+  >
+    <dxo-format type="fixedPoint"
+                [precision]="2"
+    ></dxo-format>
+
+    <dxo-loading-indicator backgroundColor="none" text="Yükleniyor">
+      <dxo-font [size]="14"></dxo-font>
+    </dxo-loading-indicator>
+
+  </dxo-tooltip>
+</dx-chart>
+

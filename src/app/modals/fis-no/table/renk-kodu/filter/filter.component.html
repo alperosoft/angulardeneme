@@ -1,0 +1,260 @@
+<div class="modal">
+  <div class="container">
+    <div class="header">
+      <div><h3>İlk Değer</h3></div>
+      <div><h3>Son Değer</h3></div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Sipariş Tarihi</mat-label>
+          <input
+            matInput
+            [matDatepicker]="siparisTarihIlk"
+            (ngModelChange)="onInputChange()"
+            [(ngModel)]="filterValues.sptrh_i"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="siparisTarihIlk">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #siparisTarihIlk></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Sipariş Tarihi</mat-label>
+          <input
+            matInput
+            [matDatepicker]="siparisTarihSon"
+            (ngModelChange)="onInputChange()"
+            [(ngModel)]="filterValues.sptrh_s"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="siparisTarihSon">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #siparisTarihSon></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field (dblclick)="openFirmaModal('ilk')">
+          <mat-label>Firma Kodu</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.frm_kod_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field (dblclick)="openFirmaModal('son')">
+          <mat-label>Firma Kodu</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.frm_kod_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field>
+          <mat-label>Yıl</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.yil_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Yıl</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.yil_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field>
+          <mat-label>Sipariş No</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.sipno_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Sipariş No</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.sipno_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field (dblclick)="openProfilModal('ilk')">
+          <mat-label>Profil No</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.mm_kod_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field (dblclick)="openProfilModal('son')">
+          <mat-label>Profil No</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.mm_kod_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field>
+          <mat-label>Renk Kodu</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.cl_kod_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Renk Kodu</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.cl_kod_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field>
+          <mat-label>Teklif Id</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.id_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Teklif Id</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.id_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field>
+          <mat-label>Kod</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.as_kod_i"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Kod</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterValues.as_kod_s"
+            (ngModelChange)="onInputChange()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column">
+      <div>
+        <mat-form-field>
+          <mat-label>Ürün Tipi</mat-label>
+          <mat-select
+            name="select"
+            [(ngModel)]="filterValues.urun_tipi"
+            (ngModelChange)="onInputChange()"
+          >
+            <mat-option
+              *ngFor="let select of urunTipiOptions"
+              [value]="select.value"
+            >{{ select.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Durumu</mat-label>
+          <mat-select
+            name="select"
+            [(ngModel)]="filterValues.bitis"
+            (ngModelChange)="onInputChange()"
+          >
+            <mat-option
+              *ngFor="let select of durumuOptions"
+              [value]="select.value"
+            >{{ select.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="column" style="margin-bottom: 15px">
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="onClear()"
+          style="width: 100%"
+        >
+          Temizle
+        </button>
+      </div>
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="onClose()"
+          style="width: 100%"
+        >
+          Süz
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

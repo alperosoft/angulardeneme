@@ -1,0 +1,109 @@
+<app-header></app-header>
+
+@if (loadIndicatorVisible) {
+  <div class="centered-indicator">
+    <dx-load-indicator
+      id="medium-indicator"
+      height="40"
+      width="40"
+
+      [visible]="loadIndicatorVisible"
+    ></dx-load-indicator>
+  </div>
+} @else {
+  <div style="padding-left: 15px; padding-right: 15px;">
+    <br>
+    <mat-card>
+      <mat-card-content class="content-container">
+        <div class="button-group">
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Düzenle"
+            (click)="onEditRow()"
+          >
+            <mat-icon>note_edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Yeni"
+            (click)="onAddRow()"
+          >
+            <mat-icon>note_add</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Sil"
+            (click)="onDelete()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div class="text-container">
+          <span class="end-text">Mamul Tanıtımı</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    </div>
+
+    <dx-data-grid
+      #grid
+      id="grid"
+      keyExpr="mm_primno"
+      noDataText="Veri Yok"
+      [dataSource]="mamlz"
+      [showBorders]="true"
+      [allowColumnResizing]="true"
+      [columnResizingMode]="'widget'"
+      (onRowDblClick)="onRowDoubleClick($event)"
+      (onRowClick)="onRowClick($event)"
+  >
+    <dxo-selection mode="single"></dxo-selection>
+    <dxi-column dataField="mm_kod" caption="Stok Kodu" [width]="120" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_ad" caption="Adı" [width]="250" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_cins" caption="Cinsi" [width]="130" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_ad_ydil" caption="Yabancı Dil Adı" [width]="160" dataType="number" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_tas_no" caption="Entegrasyon Kodu" [width]="180" dataType="number" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+
+    <!-- <dxi-column dataField="mm_i1" caption="Çift Boya" [width]="110" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column> -->
+    <dxi-column 
+      dataField="compute_i1" 
+      caption="Çift Boya" 
+      dataType="boolean" 
+      [width]="110"
+      headerCellTemplate="HeaderTemplate"
+      [cellTemplate]="checkBoxTemplate">
+    </dxi-column>
+
+    <dxi-column dataField="compute_grp" caption="Grubu" [width]="90" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="compute_grp1" caption="Mamul Grup-2" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_v3" caption="Üretim Kodu" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_v2" caption="Katalog No" [width]="130" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_barkod" caption="Barkod" [width]="100" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_orjkod" caption="Orijinal Kod" [width]="140" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_birim" caption="Birim" [width]="80" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="firma.frm_ksad" caption="Ted.Firma" [width]="140" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_satis_fiyat" caption="Satış Fiyat" [width]="130" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_satis_dvz_kod" caption="Döviz Kodu" [width]="130" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_grmj2" caption="Ham Gramaj" [width]="135" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="cmpt_alis_hsp_kod" caption="Muhasebe Kodu Alış" [width]="220" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="cmpt_satis_hsp_kod" caption="Muhasebe Kodu Satış" [width]="220" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_primno" caption="Stok Id" [width]="120" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+  
+    <div *dxTemplate="let info of 'HeaderTemplate'">
+      <p style="font-size:18px;font-weight: bold">{{info.column.caption}}</p>
+    </div>
+  
+    <div *dxTemplate="let cell of 'cellTemplate'">
+      <div style="font-size:16px;font-weight: bold">{{cell.text}}</div>
+    </div>
+    
+    <ng-template #checkBoxTemplate let-cell>
+      <dx-check-box [(value)]="cell.data.compute_i1"></dx-check-box>
+    </ng-template>
+
+  </dx-data-grid>  
+}

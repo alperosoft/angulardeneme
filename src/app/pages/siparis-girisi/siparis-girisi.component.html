@@ -1,0 +1,300 @@
+<app-header></app-header>
+
+<div style="padding: 15px">
+  <mat-card>
+    <mat-card-content class="content-container">
+      <div class="button-group">
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Kaydet"
+          (click)="add()"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Geri"  (click)="previous()">
+          <mat-icon>skip_previous</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="İleri" (click)="next()">
+          <mat-icon>skip_next</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Yeni" (click)="new()">
+          <mat-icon>note_add</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Sil" (click)="delete()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <div class="text-container">
+        <span class="end-text">Sipariş Girişi</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="flex">
+    <div class="grid">
+      <div style="display: flex; gap: 5px">
+        <dx-number-box
+          label="Yıl"
+          [(value)]="Values.sp_no1"
+          (onValueChanged)="onInputChange()"
+        ></dx-number-box>
+        <div (dblclick)="openFisnoDialog()">
+          <dx-number-box
+            label="Fiş No"
+            [(value)]="Values.sp_no2"
+            (onValueChanged)="onInputChange()"
+            (onEnterKey)="onFisNo(Values.sp_no2)"
+          ></dx-number-box>
+        </div>
+      </div>
+      <div>
+        <dx-date-box
+          label="Sipariş Tarihi"
+          [(value)]="Values.sp_siptrh"
+          (onValueChanged)="onDateChangeSiparisTarihi($event)"
+        ></dx-date-box>
+      </div>
+      <div>
+        <dx-text-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_veren"
+          label="Sipariş Veren"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_ihrc_tip"
+          [dataSource]="Constants.ihracatTipi"
+          displayExpr="viewValue"
+          label="İhracat Tipi"
+          valueExpr="value"
+        >
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-date-box
+          (onValueChanged)="onDateChangeOnerilenTarih($event)"
+          [(value)]="Values.sp_cikis_trh"
+          label="Önerilen Tarih"
+        ></dx-date-box>
+      </div>
+      <div style="display: flex; gap: 2px">
+        <div (dblclick)="openDialog()">
+          <dx-text-box
+            (onEnterKey)="onFirma(Values.sp_frm_kod)"
+            (onValueChanged)="onInputChange()"
+            [(value)]="Values.sp_frm_kod"
+            label="Firma Kodu"
+            style="width: 100%"
+          ></dx-text-box>
+        </div>
+        <div
+          style="
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: orange;
+          "
+          *ngIf="frm.frm_ksad"
+        >
+          {{ frm.frm_ksad }}
+        </div>
+      </div>
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          gap: 5px;
+          width: 100%;
+          align-items: center;
+        "
+      >
+        <dx-date-box
+          style="width: 100%"
+          label="Sevk Tarihi"
+          [(value)]="Values.sp_yuktrh"
+          (onValueChanged)="onDateChange($event)"
+          [displayFormat]="'dd.MM.yyyy'"
+        ></dx-date-box>
+        <div style="color: orange; font-size: 13px">{{ days }}</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_per_no"
+          [dataSource]="Constants.personel"
+          displayExpr="viewValue"
+          label="Sipariş Alan"
+          valueExpr="value"
+        >
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_ode_plan"
+          [dataSource]="responseData[0]"
+          displayExpr="gs_ad"
+          label="Ödeme Planı"
+          valueExpr="gs_kod"
+        >
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="Müşteri Sip.No"
+          [(value)]="Values.sp_aciklama1"
+          (onValueChanged)="onInputChange()"
+        ></dx-text-box>
+      </div>
+      <div style="display: flex; gap: 2px">
+        <div (dblclick)="openFirmadistDialog()">
+          <dx-text-box
+            label="Dist. Firma"
+            [(value)]="Values.sp_frmd_kod"
+            (onValueChanged)="onInputChange()"
+            (onEnterKey)="onDistFirma(Values.sp_frmd_kod)"
+          ></dx-text-box>
+        </div>
+        <div
+          style="
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: orange;
+          "
+          *ngIf="frm.frmd_kod"
+        >
+          {{ frm.frmd_kod }}
+        </div>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_sk_kod"
+          [dataSource]="responseData[1]"
+          displayExpr="sk_ad"
+          label="Sipariş Kategori"
+          valueExpr="sk_kod"
+        >
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_label_kod"
+          [dataSource]="responseData[2]"
+          displayExpr="lb_ad"
+          label="Etiket"
+          valueExpr="lb_kod"
+        >
+          <ng-container *dxTemplate="let item of 'content'">
+            <div *ngFor="let data of responseData[2]">
+              {{ data.lb_ad }}
+            </div>
+          </ng-container>
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-number-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_liste"
+          label="Fiyat Liste"
+        ></dx-number-box>
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <div style="color: orange; font-size: 15px">
+          Onay: <strong>{{ spOnay || "Onaysız" }}</strong>
+        </div>
+        <div style="color: orange; font-size: 15px" *ngIf="spFatura">
+          {{ spFatura }}
+        </div>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_st_kod"
+          [dataSource]="Constants.calismaTuru"
+          displayExpr="viewValue"
+          label="Çalışma Türü"
+          valueExpr="value"
+        >
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-text-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_referans"
+          label="Referans"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_fad_id"
+          [dataSource]="Constants.sevkAdresi"
+          displayExpr="viewValue"
+          label="Sevk Adresi"
+          valueExpr="value"
+        >
+        </dx-select-box>
+      </div>
+      <div>
+        <dx-text-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_teslim"
+          label="Teslim Şekli"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-number-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_asp_id"
+          label="Proje"
+        ></dx-number-box>
+      </div>
+      <div>
+        <dx-select-box
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_dosya"
+          [dataSource]="Constants.siparisDurumu"
+          displayExpr="viewValue"
+          label="Sipariş Durumu"
+          valueExpr="value"
+        >
+        </dx-select-box>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div style="display: flex; flex-direction: row; gap: 10px; width: 100%">
+        <dx-text-area
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_aciklama"
+          label="Açıklama"
+          style="width: 100%"
+        ></dx-text-area>
+        <div style="color: orange; font-size: 15px">{{ spTarih }}</div>
+      </div>
+      <div>
+        <dx-text-area
+          (onValueChanged)="onInputChange()"
+          [(value)]="Values.sp_svk_adres"
+          label="Sevk Adresi"
+        ></dx-text-area>
+      </div>
+    </div>
+  </div>
+
+  <app-siparis-girisi-detay [primno]="spPrimno" [frm]="frm"></app-siparis-girisi-detay>
+  <!--  <app-sipdetay-tablo [primno]="spPrimno" [frm]="frm"></app-sipdetay-tablo>-->
+</div>

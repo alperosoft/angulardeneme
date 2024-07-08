@@ -1,0 +1,276 @@
+<app-header></app-header>
+
+@if (loadIndicatorVisible) {
+  <div class="centered-indicator">
+    <dx-load-indicator
+      id="medium-indicator"
+      height="40"
+      width="40"
+
+      [visible]="loadIndicatorVisible"
+    ></dx-load-indicator>
+  </div>
+} @else {
+  <!--  <div style="background: #e6e3e37a;">-->
+  <div style="padding: 15px">
+    <br>
+    <mat-card>
+      <mat-card-content class="content-container">
+        <div class="button-group">
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Kaydet"
+            (click)="saveMaster()"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Geri"
+            (click)="previous()"
+          >
+            <mat-icon>skip_previous</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="İleri"
+            (click)="next()"
+          >
+            <mat-icon>skip_next</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Yeni"
+            (click)="clearForm()"
+          >
+            <mat-icon>note_add</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Sil"
+            (click)="deleteButton()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div class="text-container">
+          <span class="end-text">Stok Girişi</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <br>
+    <div>
+      <form [formGroup]="form">
+        <dx-form [colCount]="1" style="margin-left: 20px;" [formData]="form.value">
+          <dxi-item>
+            <div class="flex">
+              <div class="grid">
+                <div style="display: flex; gap: 5px">
+                  <dx-drop-down-box
+                    (onValueChanged)="onDepoGridBoxValueChanged($event)"
+                    [(opened)]="isGridBoxOpenedDepo"
+                    [value]="selectedDepo"
+                    [dataSource]="depos"
+                    [deferRendering]="false"
+                    displayExpr="dp_ad"
+                    label="Depo"
+                    width="300px">
+                    <div>
+                      <dx-data-grid
+                        [dataSource]="depos"
+                        [hoverStateEnabled]="true"
+                        [showBorders]="true"
+                        [(selectedRowKeys)]="selectedDepo"
+                        height="300px">
+                        <dxi-column dataField="dp_no" caption="Kod" width="80px"></dxi-column>
+                        <dxi-column dataField="dp_ad" caption="Ad" width="220px"></dxi-column>
+
+                        <dxo-selection mode="single"></dxo-selection>
+                        <dxo-filter-row [visible]="true"></dxo-filter-row>
+                        <dxo-scrolling mode="virtual"></dxo-scrolling>
+                        <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                      </dx-data-grid>
+                    </div>
+                  </dx-drop-down-box>
+
+                  <dx-number-box
+                    formControlName="sf_no2"
+                    [min]="0"
+                    [max]="1000000"
+                    label="Fiş No"
+                    format="#"
+                    width="150px"
+                    (onValueChanged)="onSiparisNoValueChanged($event)"
+                  >
+                  </dx-number-box>
+                </div>
+              </div>
+            </div>
+          </dxi-item>
+          <dxi-item>
+            <div class="flex">
+              <div class="grid">
+                <div style="display: flex; gap: 5px">
+
+                  <dx-drop-down-box
+                    (onValueChanged)="onVardiyaGridBoxValueChanged($event)"
+                    [(opened)]="isGridBoxOpenedVardiya"
+                    [value]="selectedVardiya"
+                    [dataSource]="vardiya"
+                    [deferRendering]="false"
+                    displayExpr="vad_ad"
+                    label="Vardiya"
+                    width="300px"
+                  >
+                    <div>
+                      <dx-data-grid
+                        [dataSource]="vardiya"
+                        [hoverStateEnabled]="true"
+                        [showBorders]="true"
+                        [(selectedRowKeys)]="selectedVardiya"
+                        height="400px"
+                      >
+                        <dxi-column dataField="vad_kod" caption="Kod" width="100px"></dxi-column>
+                        <dxi-column dataField="vad_ad" caption="Ad" width="200px"></dxi-column>
+
+                        <dxo-selection mode="single"></dxo-selection>
+                        <dxo-filter-row [visible]="true"></dxo-filter-row>
+                        <dxo-scrolling mode="virtual"></dxo-scrolling>
+                        <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                      </dx-data-grid>
+                    </div>
+                  </dx-drop-down-box>
+
+                  <dx-date-box
+                    [displayFormat]="'yyyy-MM-dd'"
+                    formControlName="sf_belge_trh"
+                    label="Tarih"
+                    type="date"
+                    width="150px"
+                  >
+                  </dx-date-box>
+
+                  <dx-number-box
+                    [value]="15"
+                    label="Fiş Tipi"
+                    format="#"
+                    width="150px"
+                  >
+                  </dx-number-box>
+                </div>
+              </div>
+            </div>
+          </dxi-item>
+          <dxi-item>
+            <dx-text-area
+              [height]="70"
+              [width]="900"
+              formControlName="sf_aciklama"
+              [inputAttr]="{ 'aria-label': 'Notes' }"
+              label="Açıklama"
+            >
+            </dx-text-area>
+          </dxi-item>
+        </dx-form>
+      </form>
+    </div>
+  </div>
+
+  <dx-data-grid
+    #grid
+    id="grid"
+    keyExpr="sfd_sira"
+    noDataText="Veri Yok"
+    [dataSource]="stkfdTops"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnResizingMode]="'widget'"
+    (onSaving)="onRowUpdateOrAdd($event)"
+    (onEditingStart)="editingStart($event.data)"
+    (onInitNewRow)="rowInserted('InitNewRow',$event)"
+    (onRowRemoving)="rowRemoved($event)"
+  >
+    <dxo-editing
+      mode="row"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [allowAdding]="true"
+    >
+    </dxo-editing>
+    <dxi-column dataField="sfd_primno" caption="primno" [visible]="false" [width]="80"></dxi-column>
+    <dxi-column dataField="sfd_sira" caption="Sıra" [allowEditing]="false" [width]="80" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="sfd_mm_primno" caption="Malzeme Prim No" [visible]="false" [width]="80"></dxi-column>
+    <dxi-column dataField="sfd_mm_kod" caption="Stok Kodu" [width]="180" editCellTemplate="mamlzDropDownBoxEditor" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate">
+      <dxo-lookup
+        [dataSource]="mamlzs"
+        displayExpr="mm_kod"
+        valueExpr="mm_kod"
+        class="custom-font-lookup"
+      ></dxo-lookup>
+    </dxi-column>
+    <dxi-column dataField="StkfCmpt.cmpt_mm_ad"
+                caption="Stok Adı"
+                [allowEditing]="false"
+                headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate">
+    </dxi-column>
+    <dxi-column dataField="sfd_topsira" caption="Biet No" [width]="150"   headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="sfd_en" caption="Çap" [width]="130" dataType="number" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="sfd_metretul" caption="Boy(mm)" [width]="130" dataType="number" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="sfd_barkod" caption="Barkod" [width]="150" headerCellTemplate="HeaderTemplate"  cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="sfd_dara2" caption="Biet Yoğunluk" dataType="number" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="sfd_barkod2" caption="Bağ. Barkod" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+
+    <div *dxTemplate="let cellInfo of 'mamlzDropDownBoxEditor'">
+      <dx-drop-down-box
+        [dataSource]="mamlzs"
+        [(value)]="cellInfo.value"
+        [inputAttr]="{ 'aria-label': 'sfd_mm_kod' }"
+        displayExpr="mm_kod"
+        valueExpr="mm_kod"
+        contentTemplate="contentTemplate"
+        width="500px"
+      >
+        <div *dxTemplate="let e of 'contentTemplate'">
+          <dx-data-grid
+            [dataSource]="mamlzs"
+            [remoteOperations]="true"
+            [height]="250"
+            [selectedRowKeys]="[cellInfo.value]"
+            [focusedRowKey]="cellInfo.value"
+            [hoverStateEnabled]="true"
+            (onSelectionChanged)="onMamlzeSelectionChanged($event.selectedRowKeys, cellInfo, e.component)"
+          >
+            <dxi-column dataField="mm_primno" caption="Primno" width="100px" [visible]="false"></dxi-column>
+            <dxi-column dataField="mm_kod" caption="Kod" width="150px"></dxi-column>
+            <dxi-column dataField="mm_ad" caption="Ad"></dxi-column>
+            <dxi-column dataField="mm_birim" caption="Birim" width="100px"></dxi-column>
+            <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+            <dxo-scrolling mode="virtual"></dxo-scrolling>
+            <dxo-selection mode="single"></dxo-selection>
+          </dx-data-grid>
+        </div>
+      </dx-drop-down-box>
+    </div>
+
+    <div *dxTemplate="let info of 'HeaderTemplate'">
+      <p style="font-size:18px;font-weight: bold">{{info.column.caption}}</p>
+    </div>
+
+    <div *dxTemplate="let cell of 'cellTemplate'">
+      <div style="font-size:16px;font-weight: bold">{{cell.text}}</div>
+    </div>
+
+    <dxo-toolbar>
+      <dxi-item name="addRowButton" showText="always"></dxi-item>
+    </dxo-toolbar>
+  </dx-data-grid>
+}

@@ -1,0 +1,124 @@
+.kanban-container {
+  margin-top: 40px;
+  position: relative;
+  border-radius: 6px;
+  background-color: rgba(108, 117, 125, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  height: 500px;
+  align-content: flex-start;
+  overflow-y: auto;
+  padding-top: 35px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* İçerisindeki elemanları otomatik olarak sırala */
+  grid-auto-rows: 80px; /* Elemanların yüksekliğini ayarla */
+}
+
+.kanban-container .box {
+  margin-left: 6px;
+  width: 120px; /* Kartın genişliği */
+  height: 80px; /* Kartın yüksekliği */
+  background: white;
+  border-radius: 8px;
+  border-left: 1px solid green;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.box {
+  position: relative;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 15px;
+  color: rgba(255, 0, 0, 0.56); /* Çarpı ikonunun rengi */
+
+}
+
+.delete-icon:hover {
+  color: rgba(139, 0, 0, 0.6); /* Fare üzerine gelindiğinde rengi */
+}
+
+.tab-content {
+  position: relative;
+}
+
+.dropdown-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 5px; /* İstenilen yüksekliğe göre ayarlayın */
+}
+
+.dropbtn {
+  //background-color: transparent;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: -47px;
+  right: 25px;
+  width: 100px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* Dropdown'ın butonunun altında olmasını sağlar */
+  right: 0; /* Dropdown'ı butonun sağında konumlandırır */
+  background-color: #f9f9f9;
+  min-width: 120px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  z-index: 3;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+
+}
+
+.show {
+  display: block;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* İki sütun */
+  grid-template-rows: 1fr 1fr; /* İki satır */
+  gap: 10px; /* Kutular arası boşluk */
+  height: 100vh; /* Ekranın tamamını kapla */
+  margin: 0; /* Kenar boşlukları sıfırla */
+  padding: 0; /* İç dolguları sıfırla */
+  overflow: hidden; /* Taşma durumunda taşan içeriği gizle */
+  max-width: 100%;
+}
+
+.box {
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  height: 100%; /* Kutu yüksekliğini tamamen doldur */
+}
+

@@ -1,0 +1,88 @@
+<app-header></app-header>
+
+@if (loadIndicatorVisible) {
+  <div class="centered-indicator">
+    <dx-load-indicator
+      id="medium-indicator"
+      height="40"
+      width="40"
+
+      [visible]="loadIndicatorVisible"
+    ></dx-load-indicator>
+  </div>
+} @else {
+  <div style="padding-left: 15px; padding-right: 15px;">
+    <br>
+    <mat-card>
+      <mat-card-content class="content-container">
+        <div class="button-group">
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Düzenle"
+            (click)="onEditRow()"
+          >
+            <mat-icon>note_edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Yeni"
+            (click)="onAddRow()"
+          >
+            <mat-icon>note_add</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Sil"
+            (click)="onDelete()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div class="text-container">
+          <span class="end-text">Firma Tanıtımı</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    </div>
+
+    <dx-data-grid
+      #grid
+      id="grid"
+      keyExpr="frm_id"
+      noDataText="Veri Yok"
+      [dataSource]="firma"
+      [showBorders]="true"
+      [allowColumnResizing]="true"
+      [columnResizingMode]="'widget'"
+      (onRowDblClick)="onRowDoubleClick($event)"
+      (onRowClick)="onRowClick($event)"
+  >
+    <dxo-selection mode="single"></dxo-selection>
+    <dxi-column dataField="frm_kod" caption="Cari Hesap Kodu" [allowEditing]="false" [width]="170" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_ad" caption="Adı" [width]="250" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_ksad" caption="Firma Kısa Adı" [width]="170" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="mm_kod" caption="OSOFT Muhasebe Hesap Kodu" [width]="280" dataType="number" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_efat_sw" caption="E-Fatura" [width]="100" dataType="number" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_i3" caption="Fiyat Listesi" [width]="130" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_ktgr_kod" caption="Kategori" [width]="100" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_telefon" caption="Telefon" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_fax" caption="Fax" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_vergno" caption="Vergi No" [width]="120" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_vergda" caption="Vergi Dairesi" [width]="150" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_muh_cari" caption="Muh.Entegrasyon Cari Kodu" [width]="270" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+    <dxi-column dataField="frm_muh_hesno" caption="Muh.Entegrasyon Hesap Kodu" [width]="275" headerCellTemplate="HeaderTemplate" cellTemplate="cellTemplate"></dxi-column>
+  
+    <div *dxTemplate="let info of 'HeaderTemplate'">
+      <p style="font-size:18px;font-weight: bold">{{info.column.caption}}</p>
+    </div>
+  
+    <div *dxTemplate="let cell of 'cellTemplate'">
+      <div style="font-size:16px;font-weight: bold">{{cell.text}}</div>
+    </div>
+  </dx-data-grid>
+  
+}

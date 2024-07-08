@@ -1,0 +1,178 @@
+<app-header></app-header>
+
+<br>
+<dx-form [colCount]="5" style="margin-left:80px; ">
+  <dxi-item>
+    <dx-drop-down-box
+      [width]="300"
+      [(opened)]="isGridBoxOpenedComboUser"
+      [(value)]="gridBoxValueComboUser"
+      [dataSource]="users"
+      [deferRendering]="false"
+      label="Kullanıcı"
+      [displayExpr]="gridBox_displayExprUser"
+      (onValueChanged)="onGridBoxValueChangedUser($event)"
+    >
+      <div>
+        <dx-data-grid
+          [dataSource]="users"
+          [hoverStateEnabled]="true"
+          [showBorders]="true"
+          [(selectedRowKeys)]="gridBoxValueComboUser"
+          height="500px"
+        >
+          <dxi-column dataField="us_kod" caption="Kod"></dxi-column>
+          <dxi-column dataField="us_ad" caption="Ad"></dxi-column>
+          <dxi-column dataField="us_soyad" caption="Soyadı"></dxi-column>
+
+          <dxo-selection mode="single"></dxo-selection>
+          <dxo-filter-row [visible]="true"></dxo-filter-row>
+          <dxo-scrolling mode="virtual"></dxo-scrolling>
+          <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+        </dx-data-grid>
+      </div>
+    </dx-drop-down-box>
+  </dxi-item>
+  <dxi-item style="display: flex;margin-top:5px;">
+    <div style="flex: 0; margin-right: 5px;">
+      <dx-button
+        text="Kayıt"
+        type="success"
+        stylingMode="contained"
+        width={160}
+      >
+      </dx-button>
+    </div>
+    <div style="flex: 0; margin-right: 5px;">
+      <dx-button
+        text="Temizle"
+        type="danger"
+        stylingMode="contained"
+        width={160}
+      >
+      </dx-button>
+    </div>
+    <div style="flex: 0; margin-right: 5px;">
+      <dx-button
+        text="Kopya"
+        type="default"
+        stylingMode="contained"
+        width={160}
+      >
+      </dx-button>
+    </div>
+  </dxi-item>
+</dx-form>
+
+<br>
+<div class="container">
+  <div class="column">
+    <div class="caption" style="text-align: center">
+      <span><b>Ana Menü</b></span>
+    </div>
+    <hr style="height:1px;background-color:black">
+    <dx-list
+      #list
+      [dataSource]="anaMenu"
+      selectionMode="multiple"
+      (mousemove)="onMouseMoveAnaMenu($event)"
+    >
+
+      <div *dxTemplate="let itemData of 'item'">
+
+        <!--        @if (itemData) {-->
+        <!--          <div class="list-item" [id]="itemData.id" [attr.data-menuprimno]="itemData.menuPrimNo"-->
+        <!--               [attr.data-id]="itemData.id">-->
+        <!--            <dx-check-box [(value)]="itemData.selected"-->
+        <!--                          (click)="onCheckBoxChangeAnaMenu($event,itemData)"></dx-check-box>-->
+        <!--            &lt;!&ndash;          <dx-check-box [value]="itemData.selected"&ndash;&gt;-->
+        <!--            &lt;!&ndash;                        (onValueChanged)="onCheckBoxChangeAnaMenu($event,itemData)"></dx-check-box>&ndash;&gt;-->
+        <!--            {{ itemData.text }}-->
+        <!--          </div>-->
+        <!--        }-->
+        <div class="list-item" [id]="itemData.id" [attr.data-menuprimno]="itemData.menuPrimNo"
+             [attr.data-id]="itemData.id">
+
+          <!--          <dx-check-box [value]="itemData.selected"-->
+          <!--                        (onValueChanged)="onCheckBoxChangeAnaMenu($event,itemData)">-->
+          <!--          </dx-check-box>-->
+          <!--          {{ itemData.text }}-->
+          <mat-checkbox
+            [checked]="itemData.selected"
+            color="warn"
+            (change)="onCheckBoxChangeAnaMenu($event,itemData)">
+          </mat-checkbox>
+          {{ itemData.text }}
+        </div>
+      </div>
+
+    </dx-list>
+  </div>
+  <div class="column">
+    <div class="caption" style="text-align: center">
+      <span><b>Alt Menü</b></span>
+    </div>
+    <hr style="height:1px;background-color:black">
+    <dx-list
+      #list
+      [dataSource]="altMenu"
+      selectionMode="multiple"
+      (mousemove)="onMouseMoveAltMenu($event)"
+    >
+      <div *dxTemplate="let itemData of 'item'">
+        <div class="list-item-alt-menu" [id]="itemData.id" [attr.data-alt-menu]="itemData.menuPrimNo"
+             [attr.data-id-alt-menu]="itemData.id">
+<!--                    <dx-check-box [value]="itemData.selected"-->
+<!--                                  (onValueChanged)="onCheckBoxChangeAltMenu($event,itemData)">-->
+<!--                    </dx-check-box>-->
+<!--                    {{ itemData.text }}-->
+          <mat-checkbox
+            (change)="onCheckBoxChangeAltMenu($event,itemData)"
+            [checked]="itemData.selected"
+            color="warn">
+          </mat-checkbox>
+          {{ itemData.text }}
+
+        </div>
+      </div>
+    </dx-list>
+  </div>
+  <div class="column">
+
+    <div class="caption" style="text-align: center">
+      <span><b>Tanımlamalar</b></span>
+      <!--      @if (this.tanimlamalarAnamenuTitle !=="") {-->
+      <!--          <span><b>{{ this.tanimlamalarAnamenuTitle }}</b></span>-->
+      <!--          &lt;!&ndash; <span><b>{{ this.tanimlamalarAnamenuTitle }} > {{ this.tanimlamalarAltMenuTitle }}</b></span>&ndash;&gt;-->
+      <!--      } @else {-->
+      <!--        <span><b>&nbsp;</b></span>-->
+      <!--      }-->
+
+    </div>
+    <hr style="height:1px;background-color:black">
+
+    <dx-list
+      #list
+      [dataSource]="altMenuTanimlamalar"
+      selectionMode="multiple"
+    >
+      <div *dxTemplate="let itemData of 'item'">
+        <div class="list-item-data-tanimlamalar" [id]="itemData.id" [attr.data-tanimlamalar]="itemData.menuPrimNo"
+             [attr.data-id-tanimlamalar]="itemData.id">
+          <!--          <dx-check-box [value]="itemData.selected"-->
+          <!--                        (onValueChanged)="onCheckBoxChangeTanimlamalar($event,itemData)"></dx-check-box>-->
+          <!--          {{ itemData.text }}-->
+
+          <mat-checkbox
+            (change)="onCheckBoxChangeTanimlamalar($event,itemData)"
+            [checked]="itemData.selected"
+            color="warn">
+          </mat-checkbox>
+          {{ itemData.text }}
+
+        </div>
+      </div>
+    </dx-list>
+  </div>
+</div>
+

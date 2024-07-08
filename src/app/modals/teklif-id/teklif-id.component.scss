@@ -1,0 +1,47 @@
+.modal {
+  background-color: white;
+  overflow: auto;
+  /*height: 700px;*/
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.table {
+  height: 400px;
+  overflow: auto;
+}
+
+.footer {
+  margin-top: 25px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  & .buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+  }
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+}

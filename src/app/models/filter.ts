@@ -1,0 +1,79 @@
+export class FilterModel {
+  filterValue1?: number;
+  filterValue2?: number;
+  filterValue3?: number;
+  filterValue4?: number;
+  filterValue5?: number;
+  filterValue6?: number;
+  filterValue7?: number;
+  filterValue8?: number;
+  filterValue9?: number;
+  filterValue10?: number;
+  filterValue11?: number;
+  filterValue12?: number;
+  filterValue13?: number;
+  filterValue14?: number;
+  filterValue15?: number;
+
+  filterValue20?: string;
+  filterValue21?: string;
+  filterValue22?: string;
+  filterValue23?: string;
+  filterValue24?: string;
+  filterValue25?: string;
+  filterValue26?: string;
+  filterValue27?: string;
+  filterValue28?: string;
+  filterValue29?: string;
+  filterValue30?: string;
+  filterValue31?: string;
+  filterValue32?: string;
+  filterValue33?: string;
+  filterValue34?: string;
+  filterValue35?: string;
+  filterValue36?: string;
+  filterValue37?: string;
+
+  // Decimal
+  filterValue40?: number;
+  filterValue41?: number;
+  filterValue42?: number;
+  filterValue43?: number;
+  filterValue44?: number;
+  filterValue45?: number;
+  filterValue46?: number;
+  filterValue47?: number;
+  filterValue48?: number;
+  filterValue49?: number;
+  filterValue50?: number;
+  filterValue51?: number;
+  filterValue52?: number;
+  filterValue53?: number;
+  filterValue54?: number;
+  filterValue55?: number;
+
+  filterValue60?: Date;
+  filterValue61?: Date;
+  filterValue62?: Date;
+  filterValue63?: Date;
+  filterValue64?: Date;
+  filterValue65?: Date;
+  filterValue66?: Date;
+  filterValue67?: Date;
+  filterValue68?: Date;
+  filterValue69?: Date;
+  filterValue70?: Date;
+  filterValue71?: Date;
+  filterValue72?: Date;
+  filterValue73?: Date;
+  filterValue74?: Date;
+  filterValue75?: Date;
+
+
+  filterValue85?: number[];
+  filterValue86?: number[];
+  filterValue87?: number[];
+  filterValue88?: number[];
+  filterValue89?: number[];
+  filterValue90?: number[];
+}

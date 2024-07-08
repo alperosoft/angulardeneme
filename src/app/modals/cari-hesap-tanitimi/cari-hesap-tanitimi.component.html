@@ -1,0 +1,994 @@
+
+
+
+<div class="modals">
+  <div class="header">
+    <h3>Cari Hesap Tanıtımı</h3>
+    <div class="close">
+      <button mat-icon-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="container">
+    <mat-card>
+      <mat-card-content class="content-container">
+        <div class="button-group">
+          <button
+            (click)="onSave()"
+            mat-icon-button
+            color="primary"
+            matTooltip="Kaydet"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+          
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Geri"
+            (click)="previous()"
+          >
+            <mat-icon>skip_previous</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="İleri"
+            (click)="next()"
+          >
+            <mat-icon>skip_next</mat-icon>
+          </button>
+
+
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Sil"
+            (click)="onDelete()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="flex">
+      <div class="grid">
+        <div>
+          <dx-text-box
+            label="Firma Adı"
+            [(value)]="firma.frm_ad"
+            maxLength="96"
+            (onValueChanged)="onFirmaAdiChange()"
+          ></dx-text-box>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-text-box
+              label="Firma Kodu"
+              [(value)]="firma.frm_kod"
+              maxLength="20"
+            ></dx-text-box>
+          </div>
+          <div>
+            <dx-text-box
+              label="Kısa Adı"
+              [(value)]="firma.frm_ksad"
+              maxLength="15"
+            ></dx-text-box>
+          </div>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-select-box
+            label="Durumu"
+            [dataSource]="Constants.Durum"
+            [(value)]="firma.frm_yok"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+          <div>
+            <dx-select-box
+            label="Sevkiyat"
+            [dataSource]="Constants.Sevkiyat"
+            [(value)]="firma.frm_stop"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+        </div>
+        </div>
+  </div>
+
+<dx-tabs
+[selectedIndex]="0"
+(onItemClick)="onTabClick($event)"
+[dataSource]="tabsWithText"
+></dx-tabs>
+
+<div *ngIf="selectedIndex === 0">
+<div class="flex">
+  <div class="grid">
+    <div>
+      <dx-text-box
+        label="Adres"
+        [(value)]="firma.frm_adres1"
+        maxLength="50"
+      ></dx-text-box>
+    </div>
+    <div>
+      <dx-text-box
+        label="Adres"
+        [(value)]="firma.frm_adres2"
+        maxLength="50"
+      ></dx-text-box>
+    </div>
+    <div>
+      <dx-text-box
+        label="Adres"
+        [(value)]="firma.frm_adres3"
+        maxLength="50"
+      ></dx-text-box>
+    </div>
+  </div>
+  <div class="grid">
+    <div style="display: flex; gap: 5px;">
+      <div>
+        <dx-text-box
+          label="Mahalle"
+          [(value)]="firma.frm_mahal"
+          maxLength="50"
+          class="custom-text-box"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="Cadde"
+          [(value)]="firma.frm_cadde"
+          maxLength="50"
+        ></dx-text-box>
+      </div>
+    </div>
+    <div style="display: flex; gap: 5px;">
+      <div>
+        <dx-text-box
+          label="Sokak"
+          [(value)]="firma.frm_sokak"
+          maxLength="50"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="Bina Adı"
+          [(value)]="firma.frm_binaadi"
+          maxLength="50"
+        ></dx-text-box>
+      </div>
+    </div>
+    <div style="display: flex; gap: 5px;">
+      <div>
+        <dx-text-box
+          label="Bina No"
+          [(value)]="firma.frm_binano"
+          maxLength="5"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="Kapı No"
+          [(value)]="firma.frm_kapino"
+          maxLength="5"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="Posta Kodu"
+          [(value)]="firma.frm_posta"
+          maxLength="50"
+        ></dx-text-box>
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div style="display: flex; gap: 5px;">
+      <div>
+        <dx-text-box
+          label="Ülke"
+          [(value)]="firma.frm_ulke"
+          maxLength="24"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="Ülke Kodu"
+          [(value)]="firma.frm_ulke_kod"
+          maxLength="5"
+        ></dx-text-box>
+      </div>
+    </div>
+      <div>
+        <dx-text-box
+          label="Şehir"
+          [(value)]="firma.frm_sehir"
+          maxLength="50"
+        ></dx-text-box>
+      </div>
+      <div>
+        <dx-text-box
+          label="İlçe"
+          [(value)]="firma.frm_ilce"
+          maxLength="50"
+        ></dx-text-box>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex">
+    <div class="grid">
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="Telefon"
+            [(value)]="firma.frm_telefon"
+            maxLength="25"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Faks"
+            [(value)]="firma.frm_fax"
+            maxLength="25"
+          ></dx-text-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="Yetkili"
+            [(value)]="firma.frm_yetkili"
+            maxLength="50"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Web Adresi"
+            [(value)]="firma.frm_web"
+            maxLength="50"
+          ></dx-text-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="E-Posta Adresi"
+            [(value)]="firma.frm_email"
+            maxLength="50"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Cep Tel (535xxxxxxx)"
+            [(value)]="firma.frm_cep_tel"
+            maxLength="10"
+          ></dx-text-box>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<div *ngIf="selectedIndex === 1">
+  <div class="flex">
+    <div class="grid">
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="TC.No"
+            [(value)]="firma.frm_tcno"
+            maxLength="11"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="TC.Kimlik Ad"
+            [(value)]="firma.frm_tc_ad"
+            maxLength="50"
+          ></dx-text-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="TC.Kimlik Soyad"
+            [(value)]="firma.frm_tc_soyad"
+            maxLength="50"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Vergi No"
+            [(value)]="firma.frm_vergno"
+            maxLength="10"
+          ></dx-text-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="Vergi Dairesi"
+            [(value)]="firma.frm_vergda"
+            maxLength="20"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Ödeme Vergi No"
+            [(value)]="firma.frm_odeme_vkn"
+            maxLength="16"
+          ></dx-text-box>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex">
+    <div class="grid">
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <div>
+            <dx-select-box
+            label="Döviz Kodu"
+            [dataSource]="responseData[1]"
+            [(value)]="firma.frm_dvz_kod"
+            displayExpr="dvz_ad"
+            valueExpr="dvz_kod"
+            ></dx-select-box>
+          </div>
+        </div>
+        <div>
+          <dx-select-box
+          label="Çalışma Kuru"
+          [(value)]="firma.frm_kur_tur"
+          [dataSource]="Constants.CalismaKuru"
+          displayExpr="viewValue"
+          valueExpr="value"
+          ></dx-select-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-select-box
+          label="Ödeme Planı"
+          [(value)]="firma.frm_ode_id"
+          [dataSource]="responseData[0]"
+          displayExpr="gs_ad"
+          valueExpr="gs_primno"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-select-box
+          label="Ödeme Tipi"
+          [(value)]="firma.frm_ode_tip"
+          [dataSource]="Constants.OdemeTipi"
+          displayExpr="viewValue"
+          valueExpr="value"
+          ></dx-select-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="Fiyat Liste No"
+            [(value)]="firma.frm_i3"
+            maxLength="3"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-select-box
+          label="Sipariş Onay"
+          [(value)]="firma.frm_t3"
+          [dataSource]="Constants.SiparisOnay"
+          displayExpr="viewValue"
+          valueExpr="value"
+          ></dx-select-box>
+        </div>
+      </div>
+    </div>
+    <div class="grid">
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-number-box
+          label="İndirim Oranı"
+          [(value)]="firma.frm_iskonto"
+        ></dx-number-box>
+        </div>
+        <div>
+          <dx-select-box
+          label="Nakliye Bedeli"
+          [(value)]="firma.frm_nak_bedeli"
+          [dataSource]="Constants.NakliyeBedeli"
+          displayExpr="viewValue"
+          valueExpr="value"
+          ></dx-select-box>
+        </div>
+      </div>
+        <div>
+          <dx-text-box
+            label="Kur Farkı"
+            [(value)]="firma.frm_kur_fark"
+          ></dx-text-box>
+        </div>
+      </div>
+    </div>
+
+  <div style="margin-top: 15px;">
+    <div style="font-size: 24px; font-weight: 800;">Banka Hesapları</div>
+  <div class="flex">
+    <div class="grid">
+        <div>
+          <dx-select-box
+          label="Banka Kodu (TL)"
+          [(value)]="firma.frm_ban_kod1"
+          [dataSource]="responseData[6]"
+          displayExpr="ban_ad"
+          valueExpr="ban_kod"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Hesap No (TL)"
+            [(value)]="firma.frm_hesno1"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="IBAN No (TL)"
+            [(value)]="firma.frm_iban1"
+          ></dx-text-box>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <dx-select-box
+          label="Banka Kodu (USD)"
+          [(value)]="firma.frm_ban_kod2"
+          [dataSource]="responseData[6]"
+          displayExpr="ban_ad"
+          valueExpr="ban_kod"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Hesap No (USD)"
+            [(value)]="firma.frm_hesno2"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="IBAN No (USD)"
+            [(value)]="firma.frm_iban2"
+          ></dx-text-box>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <dx-select-box
+          label="Banka Kodu (EURO)"
+          [(value)]="firma.frm_ban_kod3"
+          [dataSource]="responseData[6]"
+          displayExpr="ban_ad"
+          valueExpr="ban_kod"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Hesap No (EURO)"
+            [(value)]="firma.frm_hesno3"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="IBAN No (EURO)"
+            [(value)]="firma.frm_iban3"
+          ></dx-text-box>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <dx-select-box
+          label="Banka Kodu (GBP)"
+          [(value)]="firma.frm_ban_kod4"
+          [dataSource]="responseData[6]"
+          displayExpr="ban_ad"
+          valueExpr="ban_kod"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Hesap No (GBP)"
+            [(value)]="firma.frm_hesno4"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="IBAN No (GNP)"
+            [(value)]="firma.frm_iban4"
+          ></dx-text-box>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <dx-select-box
+          label="Banka Kodu (RUBLE)"
+          [(value)]="firma.frm_ban_kod5"
+          [dataSource]="responseData[6]"
+          displayExpr="ban_ad"
+          valueExpr="ban_kod"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Hesap No (RUBLE)"
+            [(value)]="firma.frm_hesno5"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="IBAN No (RUBLE)"
+            [(value)]="firma.frm_iban5"
+          ></dx-text-box>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col-span-2">
+          <dx-text-box
+            label="Gümrükleme"
+            [(value)]="firma.frm_v2"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Banka Adres"
+            [(value)]="firma.frm_v1"
+          ></dx-text-box>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 15px;">
+    <div style="font-size: 24px; font-weight: 800;">Risk Bilgileri</div>
+  <div class="flex">
+
+      <div class="grid-2" style="align-items: center;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>Açık Hesap:</div>
+          <div>        
+            <dx-check-box
+            [value]="firma.frm_ahes === 1"
+            (onValueChanged)="onCheckboxValueChanged($event, 'frm_ahes')"
+          ></dx-check-box>
+        </div>
+        </div>
+
+          <div>
+            <dx-text-box
+              label="Limitler"
+              [(value)]="firma.frm_ahes_r1"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-text-box
+              label="Kapanan Riskler"
+              [(value)]="firma.frm_ahes_r2"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-select-box
+            label="Risk Limiti Aşıldığında"
+            [(value)]="firma.frm_ahes_asim"
+            [dataSource]="Constants.RiskLimitiAsildiginda"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+      </div>
+
+      <div class="grid-2" style="align-items: center;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>Kendi Çeki:</div>
+          <div>
+          <dx-check-box
+          [value]="firma.frm_kcek === 1"
+          (onValueChanged)="onCheckboxValueChanged($event, 'frm_kcek')"
+        ></dx-check-box>
+        </div>
+        </div>
+
+          <div>
+            <dx-text-box
+              label="Limitler"
+              [(value)]="firma.frm_kcek_r1"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-text-box
+              label="Kapanan Riskler"
+              [(value)]="firma.frm_kcek_r2"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-select-box
+            label="Risk Limiti Aşıldığında"
+            [(value)]="firma.frm_kcek_asim"
+            [dataSource]="Constants.RiskLimitiAsildiginda"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+      </div>
+
+      <div class="grid-2" style="align-items: center;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>Müşteri Çeki:</div>
+          <div>
+          <dx-check-box
+          [value]="firma.frm_mcek === 1"
+          (onValueChanged)="onCheckboxValueChanged($event, 'frm_mcek')"
+        ></dx-check-box>
+        </div>
+        </div>
+
+          <div>
+            <dx-text-box
+              label="Limitler"
+              [(value)]="firma.frm_mcek_r1"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-text-box
+              label="Kapanan Riskler"
+              [(value)]="firma.frm_mcek_r2"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-select-box
+            label="Risk Limiti Aşıldığında"
+            [(value)]="firma.frm_mcek_asim"
+            [dataSource]="Constants.RiskLimitiAsildiginda"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+      </div>
+
+      <div class="grid-2" style="align-items: center;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>İrsaliye:</div>
+          <div>        
+          <dx-check-box
+          [value]="firma.frm_irs === 1"
+          (onValueChanged)="onCheckboxValueChanged($event, 'frm_irs')"
+        ></dx-check-box>
+        </div>
+        </div>
+
+          <div>
+            <dx-text-box
+              label="Limitler"
+              [(value)]="firma.frm_irs_r1"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-text-box
+              label="Kapanan Riskler"
+              [(value)]="firma.frm_irs_r2"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-select-box
+            label="Risk Limiti Aşıldığında"
+            [(value)]="firma.frm_irs_asim"
+            [dataSource]="Constants.RiskLimitiAsildiginda"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+      </div>
+
+      <div class="grid-2" style="align-items: center;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>Sipariş Sevk:</div>
+          <div>        
+          <dx-check-box
+          [value]="firma.frm_sips === 1"
+          (onValueChanged)="onCheckboxValueChanged($event, 'frm_sips')"
+        ></dx-check-box>
+        </div>
+        </div>
+
+          <div>
+            <dx-text-box
+              label="Limitler"
+              [(value)]="firma.frm_sips_r1"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-text-box
+              label="Kapanan Riskler"
+              [(value)]="firma.frm_sips_r2"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-select-box
+            label="Risk Limiti Aşıldığında"
+            [(value)]="firma.frm_sips_asim"
+            [dataSource]="Constants.RiskLimitiAsildiginda"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+      </div>
+
+      <div class="grid-2" style="align-items: center;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>Sipariş Öneri:</div>
+          <div>        
+          <dx-check-box
+          [value]="firma.frm_sipo === 1"
+          (onValueChanged)="onCheckboxValueChanged($event, 'frm_sipo')"
+        ></dx-check-box>
+        </div>
+        </div>
+
+          <div>
+            <dx-text-box
+              label="Limitler"
+              [(value)]="firma.frm_sipo_r1"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-text-box
+              label="Kapanan Riskler"
+              [(value)]="firma.frm_sipo_r2"
+            ></dx-text-box>
+          </div>
+
+          <div>
+            <dx-select-box
+            label="Risk Limiti Aşıldığında"
+            [(value)]="firma.frm_sipo_asim"
+            [dataSource]="Constants.RiskLimitiAsildiginda"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+      </div>
+
+    </div>
+  </div>
+  </div> 
+
+  <div *ngIf="selectedIndex === 2">
+    <div class="flex">
+      <div class="grid">
+        <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-select-box
+          label="Firma Kategori"
+          [(value)]="firma.frm_ktgr_kod"
+          [dataSource]="Constants.FirmaKategori"
+          displayExpr="viewValue"
+          valueExpr="value"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-select-box
+          label="Firma Grubu"
+          [(value)]="firma.frm_frmg_kod"
+          [dataSource]="responseData[5]"
+          displayExpr="frmg_ad"
+          valueExpr="frmg_kod"
+          ></dx-select-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-select-box
+          label="Personel"
+          [(value)]="firma.frm_per_no"
+          [dataSource]="Constants.personel"
+          displayExpr="viewValue"
+          valueExpr="value"
+          ></dx-select-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Sevk Yeri"
+            [(value)]="firma.frm_isletme"
+          ></dx-text-box>
+        </div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <div>
+          <dx-text-box
+            label="Vade"
+            [(value)]="firma.frm_vade"
+          ></dx-text-box>
+        </div>
+        <div>
+          <dx-text-box
+            label="Vade Farkı(%)"
+            [(value)]="firma.frm_faiz"
+          ></dx-text-box>
+        </div>
+      </div>
+      </div>
+      <div class="grid">
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-text-box
+              label="İnternet Şifresi"
+              [(value)]="firma.frm_pass"
+            ></dx-text-box>
+          </div>
+          <div>
+            <dx-select-box
+            label="Çekmezlik Test Türü"
+            [(value)]="firma.frm_cektest"
+            [dataSource]="Constants.Cektest"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-select-box
+            label="Bakılacak İş Türü"
+            [(value)]="firma.frm_gs_id"
+            [dataSource]="responseData[7]"
+            displayExpr="gs_ad"
+            valueExpr="gs_primno"
+            ></dx-select-box>
+          </div>
+          <div>
+            <dx-select-box
+            label="Ambalaj"
+            [(value)]="firma.frm_amb_kod"
+            [dataSource]="responseData[3]"
+            displayExpr="gs_ad"
+            valueExpr="gs_kod"
+            ></dx-select-box>
+          </div>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-select-box
+            label="Dist Firma"
+            [(value)]="firma.frm_frmd_kod"
+            [dataSource]="responseData[4]"
+            displayExpr="frmd_ad"
+            valueExpr="frmd_kod"
+            ></dx-select-box>
+          </div>
+          <div>
+            <dx-text-box
+              label="Firma Açıklama"
+              [(value)]="firma.frm_aciklama"
+            ></dx-text-box>
+          </div>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-text-box
+              label="Entegrasyon Kodu 1"
+              [(value)]="firma.frm_ent_kod1"
+            ></dx-text-box>
+          </div>
+          <div>
+            <dx-text-box
+              label="Entegrasyon Kodu 2"
+              [(value)]="firma.frm_ent_kod2"
+            ></dx-text-box>
+          </div>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <div>
+            <dx-text-box
+              label="Firma Logosu"
+              [(value)]="firma.frm_c1"
+            ></dx-text-box>
+          </div>
+          <div>
+            <dx-select-box
+            label="Stoklu Çalışma"
+            [(value)]="firma.frm_t1"
+            [dataSource]="Constants.StokluCalisma"
+            displayExpr="viewValue"
+            valueExpr="value"
+            ></dx-select-box>
+          </div>
+        </div>
+      </div>
+      </div>   
+      <div class="flex">
+        <div class="grid">
+          <div style="display: flex; gap: 5px;">
+            <div>
+              <dx-select-box
+              label="Firma Grubu 1"
+              [(value)]="firma.frm_gs_id1"
+              [dataSource]="Constants.firmaGrubu2"
+              displayExpr="viewValue"
+              valueExpr="value"
+              ></dx-select-box>
+            </div>
+            <div>
+              <dx-select-box
+              label="Firma Grubu 2"
+              [(value)]="firma.frm_gs_id2"
+              [dataSource]="Constants.firmaGrubu2"
+              displayExpr="viewValue"
+              valueExpr="value"
+              ></dx-select-box>
+            </div>
+          </div>
+          <div style="display: flex; gap: 5px;">
+            <div>
+              <dx-select-box
+              label="Firma Grubu 3"
+              [(value)]="firma.frm_gs_id3"
+              [dataSource]="Constants.firmaGrubu2"
+              displayExpr="viewValue"
+              valueExpr="value"
+              ></dx-select-box>
+            </div>
+            <div>
+              <dx-select-box
+              label="Firma Grubu 4"
+              [(value)]="firma.frm_gs_id4"
+              [dataSource]="Constants.firmaGrubu2"
+              displayExpr="viewValue"
+              valueExpr="value"
+              ></dx-select-box>
+            </div>
+          </div>
+          <div style="display: flex; gap: 5px;">
+            <div>
+              <dx-select-box
+              label="Firma Grubu 5"
+              [(value)]="firma.frm_gs_id5"
+              [dataSource]="Constants.firmaGrubu2"
+              displayExpr="viewValue"
+              valueExpr="value"
+              ></dx-select-box>
+            </div>
+            <div style="visibility: hidden;">
+              <dx-text-box></dx-text-box>
+            </div>
+          </div>
+      </div>
+
+    </div>
+
+</div>
+</div>

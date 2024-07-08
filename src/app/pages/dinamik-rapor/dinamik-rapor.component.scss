@@ -1,0 +1,20 @@
+::ng-deep .centered-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+::ng-deep #medium-indicator {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+::ng-deep #chart {
+  height: 440px;
+}
+
+::ng-deep .active {
+  font-weight: 500;
+}
+

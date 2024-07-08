@@ -1,0 +1,78 @@
+<app-header></app-header>
+
+<!--<dx-chart-->
+<!--  id="chart"-->
+<!--  palette="bright"-->
+<!--  [dataSource]="stkfsTahsilat"-->
+<!--&gt;-->
+<!--  <dxi-series valueField="cmpt_sf_isl_tutar" name="Tutar"></dxi-series>-->
+<!--  <dxo-common-series-settings  [ignoreEmptyPoints]="true" argumentField="sf_trh" type="bar" name="Tarih">-->
+<!--  </dxo-common-series-settings>-->
+<!--  <dxo-legend [visible]="false"></dxo-legend>-->
+<!--  <dxo-export [enabled]="true"></dxo-export>-->
+<!--  <dxo-tooltip-->
+<!--    [enabled]="true"-->
+<!--    [shared]="true"-->
+<!--    [customizeTooltip]="customizeTooltip"-->
+<!--  >-->
+<!--    <dxo-format type="largeNumber" [precision]="1"></dxo-format>-->
+<!--  </dxo-tooltip>-->
+<!--</dx-chart>-->
+
+
+<div class="container">
+  <div class="box">
+    <dx-tab-panel>
+      <dxi-item title="Kanban Board">
+        <div class="tab-content">
+
+          <div class="dropdown-container" (document:click)="closeDropdown()">
+            <div class="dropdown">
+              <button class="dropbtn btn btn-info" (click)="toggleDropdown($event)">Daha Fazla</button>
+              <div class="dropdown-content" [ngClass]="{ 'show': dropdownOpen }">
+                <a href="#" (click)="save($event)">Kaydet</a>
+                <a href="#" (click)="refresh($event)">Yenile</a>
+                <a href="#" (click)="deleteAll($event)">Tamamını Sil</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-container" #dropListContainer cdkDropListGroup>
+            <div *ngFor="let item of kanbans; let i = index" cdkDropList [cdkDropListData]="i">
+              <div cdkDrag [cdkDragData]="i" (cdkDragEntered)="dragEntered($event)" (cdkDragMoved)="dragMoved($event)"
+                   (cdkDragDropped)="dragDropped($event)" class="box">
+                <span class="delete-icon" (click)="delete(i,item)">
+                  <i class="fas fa-times"></i>
+                </span>
+                @if (item.kart_url) {
+                  <a [routerLink]="item.kart_url">
+                    @if (item.kart_icon) {
+                      <i [class]="item.kart_icon" style="font-size: 38px;color:#74C0FC;"></i>
+                    } @else {
+                      {{ item.kart_text }}
+                    }
+                  </a>
+                } @else {
+                  {{ item.kart_text }}
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </dxi-item>
+      <!--      <dxi-item title="Tab 2">-->
+      <!--        Tab 2 Content-->
+      <!--      </dxi-item>-->
+    </dx-tab-panel>
+  </div>
+  <div class="box">
+
+    <app-tahsilatlar></app-tahsilatlar>
+
+  </div>
+
+  <div class="box">
+  </div>
+  <div class="box">
+  </div>
+</div>

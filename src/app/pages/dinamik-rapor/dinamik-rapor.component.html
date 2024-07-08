@@ -1,0 +1,722 @@
+<app-header></app-header>
+
+<dx-popup
+  [(visible)]="isPopupVisible"
+  [dragEnabled]="false"
+  [height]="750"
+  [hideOnOutsideClick]="true"
+  [width]="800"
+  contentTemplate="template">
+
+  <div *dxTemplate="let data of 'template'">
+    @if (loadIndicatorVisible) {
+      <div class="centered-indicator">
+          <dx-load-indicator
+            id="medium-indicator"
+            height="40"
+            width="40"
+            [visible]="loadIndicatorVisible"
+          ></dx-load-indicator>
+      </div>
+    } @else {
+      <dx-form [colCount]="2">
+        @if (yearInDatas) {
+          @for (item of this.yearInDatas; track item.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-tag-box
+                    (onValueChanged)="onValueChangedWhereYear('year1', $event,yearInDatas[0], selectedYearsList)"
+                    [dataSource]="yearsList"
+                    [(value)]="selectedYearsList"
+                    [showSelectionControls]="true"
+                    [label]="item.caption"
+                    valueExpr="years"
+                    displayExpr="years"
+                  >
+                  </dx-tag-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-tag-box
+                    (onValueChanged)="onValueChangedWhereYear('year2', $event,yearInDatas[0], selectedYearsList2)"
+                    [dataSource]="yearsList"
+                    [(value)]="selectedYearsList2"
+                    [showSelectionControls]="true"
+                    [label]="item.caption"
+                    valueExpr="years"
+                    displayExpr="years"
+                  >
+                  </dx-tag-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!-- Input numeric between-->
+        @if (inputBetweenNumericDetsDatas) {
+          @for (items of this.inputBetweenNumericDetsDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-number-box
+                    [value]="numberBetween0"
+                    [min]="0"
+                    [max]="1000000"
+                    [label]="items.caption"
+                    (onValueChanged)="onNumericValueChanged('number0',$event,inputBetweenNumericDetsDatas[0])"
+                    format="#"
+                  >
+                  </dx-number-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-number-box
+                    [value]="numberBetween1"
+                    [min]="0"
+                    [max]="1000000"
+                    [label]="items.caption"
+                    (onValueChanged)="onNumericValueChanged('number1',$event,inputBetweenNumericDetsDatas[0])"
+                    format="#"
+                  >
+                  </dx-number-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-number-box
+                    [value]="numberBetween2"
+                    [min]="0"
+                    [max]="1000000"
+                    [label]="items.caption"
+                    (onValueChanged)="onNumericValueChanged('number2',$event,inputBetweenNumericDetsDatas[1])"
+                    format="#"
+                  >
+                  </dx-number-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-number-box
+                    [value]="numberBetween3"
+                    [min]="0"
+                    [max]="1000000"
+                    [label]="items.caption"
+                    (onValueChanged)="onNumericValueChanged('number3',$event,inputBetweenNumericDetsDatas[1])"
+                    format="#"
+                  >
+                  </dx-number-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!-- Input string basic-->
+        @if (inputBasicDetsDatas) {
+          @for (items of this.inputBasicDetsDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBasic0"
+                    (onValueChanged)="onStringBasicValueChange('string0',$event,inputBasicDetsDatas[0])"
+                  ></dx-text-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBasic1"
+                    (onValueChanged)="onStringBasicValueChange('string1',$event,inputBasicDetsDatas[1])"
+                  ></dx-text-box>
+                </dxi-item>
+              }
+              @case (2) {
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBasic2"
+                    (onValueChanged)="onStringBasicValueChange('string2',$event,inputBasicDetsDatas[2])"
+                  ></dx-text-box>
+                </dxi-item>
+              }
+              @case (3) {
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBasic3"
+                    (onValueChanged)="onStringBasicValueChange('string3',$event,inputBasicDetsDatas[3])"
+                  ></dx-text-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+        <!-- Input string betwenn-->
+        @if (inputBetweenDetsDatas) {
+          @for (items of this.inputBetweenDetsDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBetween0"
+                    (onValueChanged)="onStringBetweenValueChange('string0',$event,inputBetweenDetsDatas[0])"
+                  ></dx-text-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBetween1"
+                    (onValueChanged)="onStringBetweenValueChange('string1',$event,inputBetweenDetsDatas[0])"
+                  ></dx-text-box>
+                </dxi-item>
+
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBetween2"
+                    (onValueChanged)="onStringBetweenValueChange('string2',$event,inputBetweenDetsDatas[1])"
+                  ></dx-text-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-text-box
+                    [label]="items.caption"
+                    [(value)]="stringBetween3"
+                    (onValueChanged)="onStringBetweenValueChange('string3',$event,inputBetweenDetsDatas[1])"
+                  ></dx-text-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!--Item Combo  Basic-->
+        @if (itemComboBasicSplitDatas) {
+          @for (items of this.itemComboBasicSplitDatas; track items.index; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-select-box
+                    #selectBox
+                    [items]="items.items"
+                    [label]="items.caption"
+                    [value]="itemComboBasic0"
+                    (onValueChanged)="onComboBasicValueChanged('comboBasic0',$event,items)"
+                    displayExpr="text"
+                  ></dx-select-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-select-box
+                    [items]="items.items"
+                    [label]="items.caption"
+                    [value]="itemComboBasic1"
+                    (onValueChanged)="onComboBasicValueChanged('comboBasic1',$event,items)"
+                    displayExpr="text"
+                  ></dx-select-box>
+                </dxi-item>
+              }
+              @case (2) {
+                <dxi-item>
+                  <dx-select-box
+                    [items]="items.items"
+                    [label]="items.caption"
+                    [value]="itemComboBasic2"
+                    (onValueChanged)="onComboBasicValueChanged('comboBasic2',$event,items)"
+                    displayExpr="text"
+                  ></dx-select-box>
+                </dxi-item>
+              }
+              @case (3) {
+                <dxi-item>
+                  <dx-select-box
+                    [items]="items.items"
+                    [label]="items.caption"
+                    [value]="itemComboBasic3"
+                    (onValueChanged)="onComboBasicValueChanged('comboBasic3',$event,items)"
+                    displayExpr="text"
+                  ></dx-select-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!--Combobox Between-->
+        @if (comboBasicDatas) {
+          @for (items of this.comboBasicDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <div>
+                    <dx-drop-down-box
+                      (onValueChanged)="onGridBoxValueChanged('combo0',$event,comboBasicDatas[0])"
+                      [(opened)]="isGridBoxOpenedCombo0"
+                      [(value)]="gridBoxValueCombo0"
+                      [dataSource]="items.raporDizayn_Det_Deger"
+                      [deferRendering]="false"
+                      [label]="items.caption"
+                      [displayExpr]="gridBox_displayExpr0"
+                    >
+                      <div>
+                        <dx-data-grid
+                          [dataSource]="items.raporDizayn_Det_Deger"
+                          [hoverStateEnabled]="true"
+                          [showBorders]="true"
+                          [(selectedRowKeys)]="gridBoxValueCombo0"
+                          height="500px"
+                        >
+                          <dxi-column dataField="kod" caption="Kod"></dxi-column>
+                          <dxi-column dataField="ad" caption="Ad"></dxi-column>
+
+                          <dxo-selection mode="single"></dxo-selection>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxo-scrolling mode="virtual"></dxo-scrolling>
+                          <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        </dx-data-grid>
+                      </div>
+                    </dx-drop-down-box>
+                  </div>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <div>
+                    <dx-drop-down-box
+                      [(opened)]="isGridBoxOpenedCombo1"
+                      [(value)]="gridBoxValueCombo1"
+                      [dataSource]="items.raporDizayn_Det_Deger"
+                      [deferRendering]="false"
+                      [displayExpr]="gridBox_displayExpr1"
+                      [label]="items.caption"
+                      (onValueChanged)="onGridBoxValueChanged('combo1',$event,comboBasicDatas[1])"
+                    >
+                      <div>
+                        <dx-data-grid
+                          [dataSource]="items.raporDizayn_Det_Deger"
+                          [hoverStateEnabled]="true"
+                          [showBorders]="true"
+                          [(selectedRowKeys)]="gridBoxValueCombo1"
+                          height="500px"
+                        >
+                          <dxi-column dataField="kod" caption="Kod"></dxi-column>
+                          <dxi-column dataField="ad" caption="Ad"></dxi-column>
+
+                          <dxo-selection mode="single"></dxo-selection>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxo-scrolling mode="virtual"></dxo-scrolling>
+                          <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        </dx-data-grid>
+                      </div>
+                    </dx-drop-down-box>
+                  </div>
+                </dxi-item>
+              }
+              @case (2) {
+                <dxi-item>
+                  <div>
+                    <dx-drop-down-box
+                      [(opened)]="isGridBoxOpenedCombo2"
+                      [(value)]="gridBoxValueCombo2"
+                      [label]="items.caption"
+                      [dataSource]="items.raporDizayn_Det_Deger"
+                      [deferRendering]="false"
+                      [displayExpr]="gridBox_displayExpr2"
+                      (onValueChanged)="onGridBoxValueChanged('combo2',$event,comboBasicDatas[2])"
+                    >
+                      <div>
+                        <dx-data-grid
+                          [dataSource]="items.raporDizayn_Det_Deger"
+                          [hoverStateEnabled]="true"
+                          [showBorders]="true"
+                          [(selectedRowKeys)]="gridBoxValueCombo2"
+                          height="500px"
+                        >
+                          <dxi-column dataField="kod" caption="Kod"></dxi-column>
+                          <dxi-column dataField="ad" caption="Ad"></dxi-column>
+
+                          <dxo-selection mode="single"></dxo-selection>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxo-scrolling mode="virtual"></dxo-scrolling>
+                          <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        </dx-data-grid>
+                      </div>
+                    </dx-drop-down-box>
+                  </div>
+                </dxi-item>
+              }
+              @case (3) {
+                <dxi-item>
+                  <div>
+                    <dx-drop-down-box
+                      [(opened)]="isGridBoxOpenedCombo3"
+                      [(value)]="gridBoxValueCombo3"
+                      [dataSource]="items.raporDizayn_Det_Deger"
+                      [deferRendering]="false"
+                      [label]="items.caption"
+                      [displayExpr]="gridBox_displayExpr3"
+                      (onValueChanged)="onGridBoxValueChanged('combo3',$event,comboBasicDatas[3])"
+                    >
+                      <div>
+                        <dx-data-grid
+                          [dataSource]="items.raporDizayn_Det_Deger"
+                          [hoverStateEnabled]="true"
+                          [showBorders]="true"
+                          [(selectedRowKeys)]="gridBoxValueCombo3"
+                          height="500px"
+                        >
+                          <dxi-column dataField="kod" caption="Kod"></dxi-column>
+                          <dxi-column dataField="ad" caption="Ad"></dxi-column>
+
+                          <dxo-selection mode="single"></dxo-selection>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxo-scrolling mode="virtual"></dxo-scrolling>
+                          <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        </dx-data-grid>
+                      </div>
+                    </dx-drop-down-box>
+                  </div>
+                </dxi-item>
+              }
+              @case (4) {
+                <dxi-item>
+                  <div>
+                    <dx-drop-down-box
+                      [(opened)]="isGridBoxOpenedCombo4"
+                      [(value)]="gridBoxValueCombo4"
+                      [dataSource]="items.raporDizayn_Det_Deger"
+                      [deferRendering]="false"
+                      [label]="items.caption"
+                      [displayExpr]="gridBox_displayExpr4"
+                      (onValueChanged)="onGridBoxValueChanged('combo4',$event,comboBasicDatas[4])"
+                    >
+                      <div>
+                        <dx-data-grid
+                          [dataSource]="items.raporDizayn_Det_Deger"
+                          [hoverStateEnabled]="true"
+                          [showBorders]="true"
+                          [(selectedRowKeys)]="gridBoxValueCombo4"
+                          height="500px"
+                        >
+                          <dxi-column dataField="kod" caption="Kod"></dxi-column>
+                          <dxi-column dataField="ad" caption="Ad"></dxi-column>
+
+                          <dxo-selection mode="single"></dxo-selection>
+                          <dxo-filter-row [visible]="true"></dxo-filter-row>
+                          <dxo-scrolling mode="virtual"></dxo-scrolling>
+                          <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        </dx-data-grid>
+                      </div>
+                    </dx-drop-down-box>
+                  </div>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!--  Datetime between-->
+        @if (dateTimeBetweenDatas) {
+          @for (items of this.dateTimeBetweenDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateTimeValueChanged('datatime0',$event,dateTimeBetweenDatas[0])"
+                    [displayFormat]="'yyyy-MM-dd HH:mm:ss'"
+                    [value]="dateTimenow0"
+                    [label]="items.caption"
+                    type="datetime"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateTimeValueChanged('datatime1',$event,dateTimeBetweenDatas[0])"
+                    [displayFormat]="'yyyy-MM-dd HH:mm:ss'"
+                    [value]="dateTimenow1"
+                    [label]="items.caption"
+                    type="datetime"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item [dataField]="items.caption">
+                  <dx-date-box
+                    (onValueChanged)="onDateTimeValueChanged('datatime2',$event,dateTimeBetweenDatas[1])"
+                    [displayFormat]="'yyyy-MM-dd HH:mm:ss'"
+                    [value]="dateTimenow2"
+                    [label]="items.caption"
+                    type="datetime"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateTimeValueChanged('datatime3',$event,dateTimeBetweenDatas[1])"
+                    [displayFormat]="'yyyy-MM-dd HH:mm:ss'"
+                    [value]="dateTimenow3"
+                    [label]="items.caption"
+                    type="datetime"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!--  Date between-->
+        @if (dateBetweenDatas) {
+          @for (items of this.dateBetweenDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateBetweenValueChanged('date0',$event,dateBetweenDatas[0])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenowBetween0"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateBetweenValueChanged('date1',$event,dateBetweenDatas[0])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenowBetween1"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateBetweenValueChanged('date2',$event,dateBetweenDatas[1])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenowBetween2"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateBetweenValueChanged('date3',$event,dateBetweenDatas[1])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenowBetween3"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+        <dxi-item [colSpan]="2">
+          <div></div>
+        </dxi-item>
+
+        <!--  Date basic-->
+        @if (dateBasicDatas) {
+          @for (items of this.dateBasicDatas; track items.id; let i = $index) {
+            @switch (i) {
+              @case (0) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateValueChanged('date0',$event,dateBasicDatas[0])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenow0"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+              @case (1) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateValueChanged('date1',$event,dateBasicDatas[1])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenow1"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+              @case (2) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateValueChanged('date2',$event,dateBasicDatas[2])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenow2"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+              @case (3) {
+                <dxi-item>
+                  <dx-date-box
+                    (onValueChanged)="onDateValueChanged('date3',$event,dateBasicDatas[3])"
+                    [displayFormat]="'yyyy-MM-dd'"
+                    [value]="datenow3"
+                    [label]="items.caption"
+                    type="date"
+                  >
+                  </dx-date-box>
+                </dxi-item>
+              }
+            }
+          }
+        }
+
+
+      </dx-form>
+    }
+  </div>
+
+
+  <!--  footer-->
+  <dxi-toolbar-item
+    [options]="searchButtonOptions"
+    location="after"
+    toolbar="bottom"
+    widget="dxButton"
+  ></dxi-toolbar-item>
+
+  <dxi-toolbar-item
+    [options]="clearButtonOptions"
+    location="after"
+    toolbar="bottom"
+    widget="dxButton"
+  ></dxi-toolbar-item>
+
+  <dxi-toolbar-item
+    [options]="closeButtonOptions"
+    location="after"
+    toolbar="bottom"
+    widget="dxButton"
+  ></dxi-toolbar-item>
+  <!--  footer-->
+
+</dx-popup>
+
+<br>
+<dx-button
+  (onClick)="togglePopup()"
+  [visible]="searchButtonVisible"
+  text="Ara"
+  type="success"
+  stylingMode="contained"
+  width={160}
+>
+</dx-button>
+
+<br>
+<dx-data-grid
+  [allowColumnResizing]="true"
+  [columnAutoWidth]="true"
+  [dataSource]="dinamikRapors"
+  [showBorders]="true"
+  [showColumnHeaders]="true"
+  [allowColumnReordering]="true"
+>
+  <dxo-sorting mode="multiple"></dxo-sorting>
+  <dxo-header-filter [visible]="true"></dxo-header-filter>
+  <dxo-filter-row [visible]="true" applyFilter="auto"></dxo-filter-row>
+  <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+  <dxo-search-panel [visible]="true" placeholder="Ara"></dxo-search-panel>
+
+  @for (column of this.dynamicColumns; track column.dataField; let i = $index) {
+    <dxi-column [showInColumnChooser]="true"
+                [dataField]="column.dataField"
+                [caption]="column.caption"
+                [visible]="column.visible"
+    >
+    </dxi-column>
+  }
+
+  <dxo-summary>
+    @for (column of this.dynamicColumns; track column.dataField; let i = $index) {
+      @if (this.dinamikRaporValues.summary.includes(column.caption)) {
+        <dxi-total-item
+          [column]="column.dataField"
+          summaryType="sum"
+          displayFormat="{0}"
+          valueFormat="#.##0,##">
+        </dxi-total-item>
+      }
+    }
+
+    @for (column of this.dynamicColumns; track column.dataField; let i = $index) {
+      @if (this.dinamikRaporValues.groupSummary.includes(column.caption)) {
+        <dxi-group-item
+          [column]="column.dataField"
+          [showInGroupFooter]="true"
+          summaryType="sum"
+          displayFormat="{0}"
+          valueFormat="#.##0,##">
+        </dxi-group-item>
+      }
+    }
+  </dxo-summary>
+
+  <dxo-group-panel
+    [visible]="true">
+  </dxo-group-panel>
+
+  <dxo-paging [pageSize]="20"></dxo-paging>
+  <dxo-pager [allowedPageSizes]="[10, 20, 30]"
+             [showInfo]="true"
+             [showPageSizeSelector]="true">
+  </dxo-pager>
+
+</dx-data-grid>

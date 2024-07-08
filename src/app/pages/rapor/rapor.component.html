@@ -1,0 +1,297 @@
+<app-header></app-header>
+
+<div class="spinner-overlay" *ngIf="isLoading">
+  <mat-spinner
+    diameter="40"
+    style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    "
+  ></mat-spinner>
+</div>
+
+<div class="container">
+  <div
+    style="
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    "
+  >
+    <div class="card">
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        "
+      >
+        <div>
+          <span class="title">Tarih Aralığı</span>
+          <span class="text">{{ tarihAraligi }}</span>
+        </div>
+
+        <div>
+          <button mat-icon-button (click)="openSuzDialog()">
+            <mat-icon>find_replace</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="title">Toplam Uretim</span>
+        <span class="text">{{
+          toplamUretim | currency: "TRY" : "" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="title">Toplam Reçete</span>
+        <span class="text">{{
+          toplamRecete | currency: "TRY" : "" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="title">Toplam Net Sevkiyat (Fason)</span>
+        <span class="text">{{
+          toplamSevkiyatFason | currency: "TRY" : "" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="title">Toplam Net Sevkiyat (Satış Ürün)</span>
+        <span class="text">{{
+          toplamSevkiyatSatis | currency: "TRY" : "" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="title">Toplam Gelen Ürün</span>
+        <span class="text">{{
+          toplamGelenUrun | currency: "TRY" : "" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <dx-pie-chart
+        id="pie"
+        type="doughnut"
+        [title]="{ text: 'Üretim', font: { weight: 900 } }"
+        palette="Soft Pastel"
+        [dataSource]="uretim"
+      >
+        <dxi-series argumentField="cmpt_grp" valueField="cmpt_mkt_kg">
+          <dxo-label [visible]="true" [format]="customNumberFormat">
+            <dxo-connector [visible]="true"></dxo-connector>
+          </dxo-label>
+        </dxi-series>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-legend
+          [margin]="0"
+          horizontalAlignment="right"
+          verticalAlignment="top"
+        ></dxo-legend>
+      </dx-pie-chart>
+    </div>
+
+    <div class="card">
+      <dx-pie-chart
+        id="pie"
+        type="doughnut"
+        [title]="{ text: 'Reçete', font: { weight: 900 } }"
+        palette="Office"
+        [dataSource]="recete"
+      >
+        <dxi-series argumentField="rt_turu" valueField="cmpt_bakiye_kg">
+          <dxo-label [visible]="true" [format]="customNumberFormat">
+            <dxo-connector [visible]="true"></dxo-connector>
+          </dxo-label>
+        </dxi-series>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-legend
+          [margin]="0"
+          horizontalAlignment="right"
+          verticalAlignment="top"
+        ></dxo-legend>
+        <dxo-tooltip [enabled]="true" [format]="customNumberFormat">
+        </dxo-tooltip>
+      </dx-pie-chart>
+    </div>
+
+    <div class="card">
+      <dx-chart
+        id="chart"
+        [title]="{ text: 'Sevkiyat (Fason)', font: { weight: 900 } }"
+        palette="Carmine"
+        [dataSource]="sevkiyatFason"
+      >
+        <dxo-zoom-and-pan argumentAxis="both"></dxo-zoom-and-pan>
+
+        <dxi-series valueField="total_cmpt_bmkt_kg" name="Brut"></dxi-series>
+        <dxo-argument-axis
+          [visualRange]="{ startValue: 300, endValue: 500 }"
+          [minVisualRangeLength]="3"
+        >
+        </dxo-argument-axis>
+        <dxi-series valueField="total_cmpt_mkt_kg" name="Net"></dxi-series>
+        <dxo-common-series-settings
+          argumentField="cmpt_text"
+          type="bar"
+          [barPadding]="0.5"
+          hoverMode="allArgumentPoints"
+          selectionMode="allArgumentPoints"
+        >
+          <dxo-label [visible]="true" [format]="customNumberFormat">
+          </dxo-label>
+        </dxo-common-series-settings>
+        <dxo-scroll-bar [visible]="true"></dxo-scroll-bar>
+
+        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center">
+        </dxo-legend>
+        <dxo-export [enabled]="true"></dxo-export>
+      </dx-chart>
+    </div>
+
+    <div class="card">
+      <dx-chart
+        id="chart"
+        [title]="{ text: 'Sevkiyat (Satış)', font: { weight: 900 } }"
+        palette="Ocean"
+        [dataSource]="sevkiyatSatis"
+      >
+        <dxo-zoom-and-pan argumentAxis="both"></dxo-zoom-and-pan>
+
+        <dxi-series valueField="total_cmpt_bmkt_kg" name="Brut"></dxi-series>
+        <dxo-argument-axis
+          [visualRange]="{ startValue: 300, endValue: 500 }"
+          [minVisualRangeLength]="3"
+        >
+        </dxo-argument-axis>
+        <dxi-series valueField="total_cmpt_mkt_kg" name="Net"></dxi-series>
+        <dxo-common-series-settings
+          argumentField="cmpt_text"
+          type="bar"
+          [barPadding]="0.5"
+          hoverMode="allArgumentPoints"
+          selectionMode="allArgumentPoints"
+        >
+          <dxo-label [visible]="true" [format]="customNumberFormat">
+          </dxo-label>
+        </dxo-common-series-settings>
+        <dxo-scroll-bar [visible]="true"></dxo-scroll-bar>
+
+        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center">
+        </dxo-legend>
+        <dxo-export [enabled]="true"></dxo-export>
+      </dx-chart>
+    </div>
+
+    <div class="card">
+      <dx-chart
+        id="chart"
+        [title]="{ text: 'Gelen Ürün', font: { weight: 900 } }"
+        palette="Vintage"
+        [dataSource]="stkfd"
+      >
+        <dxo-zoom-and-pan argumentAxis="both"></dxo-zoom-and-pan>
+        <dxi-series
+          valueField="total_fason_kg"
+          name="Toplam Fason KG"
+        ></dxi-series>
+        <dxo-argument-axis
+          [visualRange]="{ startValue: 300, endValue: 500 }"
+          [minVisualRangeLength]="3"
+        >
+        </dxo-argument-axis>
+        <dxi-series
+          valueField="total_satin_alim_kg"
+          name="Toplam Satın Alım KG"
+        ></dxi-series>
+        <dxo-common-series-settings
+          argumentField="dp_ad"
+          type="bar"
+          [barPadding]="0.5"
+          hoverMode="allArgumentPoints"
+          selectionMode="allArgumentPoints"
+        >
+          <dxo-label [visible]="true" [format]="customNumberFormat">
+          </dxo-label>
+        </dxo-common-series-settings>
+        <dxo-scroll-bar [visible]="true"></dxo-scroll-bar>
+
+        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center">
+        </dxo-legend>
+        <dxo-export [enabled]="true"></dxo-export>
+      </dx-chart>
+    </div>
+
+    <div class="card">
+      <dx-pie-chart
+        id="pie"
+        type="doughnut"
+        [title]="{ text: 'Gelen Renk', font: { weight: 900 } }"
+        palette="Ocean"
+        [dataSource]="gelenRenk"
+      >
+        <dxi-series argumentField="frm_ksad" valueField="cmpt_gelen_renk_say">
+          <dxo-label [visible]="true" >
+            <dxo-connector [visible]="true"></dxo-connector>
+          </dxo-label>
+        </dxi-series>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-legend
+          [margin]="0"
+          horizontalAlignment="right"
+          verticalAlignment="top"
+        ></dxo-legend>
+
+      </dx-pie-chart>
+    </div>
+
+    <div class="card">
+      <dx-pie-chart
+        id="pie"
+        type="doughnut"
+        [title]="{ text: 'Onay Renk', font: { weight: 900 } }"
+        palette="Soft Blue"
+        [dataSource]="onayRenk"
+      >
+        <dxi-series argumentField="frm_ksad" valueField="cmpt_onay_renk_say">
+          <dxo-label [visible]="true" >
+            <dxo-connector [visible]="true"></dxo-connector>
+          </dxo-label>
+        </dxi-series>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-legend
+          [margin]="0"
+          horizontalAlignment="right"
+          verticalAlignment="top"
+        ></dxo-legend>
+
+      </dx-pie-chart>
+    </div>
+  </div>
+
+  <!-- <dx-tree-map
+    id="treemap"
+    [dataSource]="sevkiyat"
+    title="SEVKİYAT İSTATİSTİKLERİ"
+  >
+  </dx-tree-map> -->
+</div>

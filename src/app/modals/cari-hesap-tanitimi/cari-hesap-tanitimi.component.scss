@@ -1,0 +1,66 @@
+.modals {
+  background-color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow: auto;
+  height: 650px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+
+.header  {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  & h3 {
+    font-size: 20px;
+    color: rgb(13, 98, 234);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
+.column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: end;
+  text-align: end;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.grid, .grid-2 {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-2 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.foot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .grid,
+  .foot, .grid-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}

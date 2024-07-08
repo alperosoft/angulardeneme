@@ -1,0 +1,73 @@
+
+
+
+<div class="modals">
+  <div class="container">
+    <div class="close">
+      <button mat-icon-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="header">
+      <div><h3>İlk Değer</h3></div>
+      <div><h3>Son Değer</h3></div>
+    </div>
+    <div class="column">
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Tarih</mat-label>
+          <input
+            matInput
+            [matDatepicker]="tarihIlk"
+            [(ngModel)]="filterValues.filterValue60"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="tarihIlk">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #tarihIlk></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Tarih</mat-label>
+          <input
+            matInput
+            [matDatepicker]="tarihSon"
+            [(ngModel)]="filterValues.filterValue61"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="tarihSon">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #tarihSon></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- <button mat-icon-button>
+      <mat-icon>find_replace</mat-icon>
+    </button> -->
+
+    <div class="column">
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="onClear()"
+          style="height: 58px; width: 100%"
+        >
+          Temizle
+        </button>
+      </div>
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="onClose()"
+          style="height: 58px; width: 100%"
+        >
+          Süz
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
